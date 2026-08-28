@@ -209,7 +209,7 @@ Convención exacta (con/sin `/`, extensión `.json`) se congela en Fase 1.
 | Tema | Decisión |
 |------|----------|
 | Base de implementación | OpenZeppelin ERC721 + ERC2981 (no from-scratch) |
-| Numeración `tokenId` | Secuencial; inicio a confirmar en Fase 1 (0 vs 1) |
+| Numeración `tokenId` | Secuencial desde **0** (`_nextTokenId` inicia en 0) |
 | Mint público vs onlyOwner | **onlyOwner** en v1 (colección curada); mint abierto = fase extra |
 | `mint` vs `safeMint` | Ambos; batch con variante safe |
 | Royalty por token | Default obligatorio; per-token opcional en Fase 3 |

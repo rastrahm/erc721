@@ -11,8 +11,8 @@ import {INFTCollection} from "./interfaces/INFTCollection.sol";
 /**
  * @title NFTCollection
  * @notice Colección ERC-721 gas-optimizada con batch mint, base URI dinámica y ERC-2981.
- * @dev Fase 1: esqueleto con constructor y views; mutators de mint/admin → `NotImplemented`.
- *      Implementación completa en Fases 2–3. Ver `doc/00-plan-implementacion.md`.
+ * @dev Fase 2: mint individual/batch, URI dinámica y transfers estándar OZ.
+ *      Royalties admin (`setDefaultRoyalty`) en Fase 3. Ver `doc/00-plan-implementacion.md`.
  *
  * Layout: interfaz → herencia OZ → estado → constructor → views → mutators → overrides.
  */
@@ -81,33 +81,63 @@ contract NFTCollection is INFTCollection, ERC721, ERC2981, Ownable2Step {
         return _baseTokenURI;
     }
 
+    /// @inheritdoc INFTCollection
+    function tokenURI(uint256 tokenId) public view override(ERC721, INFTCollection) returns (string memory) {
+        return super.tokenURI(tokenId);
+    }
+
     // -------------------------------------------------------------------------
-    // Mutators — Fase 1: NotImplemented
+    // Mutators — mint (onlyOwner)
     // -------------------------------------------------------------------------
 
     /// @inheritdoc INFTCollection
-    function mint(address) external onlyOwner returns (uint256) {
-        revert NotImplemented();
+    function mint(address to) external onlyOwner returns (uint256 tokenId) {
+        tokenId = _reserveMint(to, 1);
+        _mint(to, tokenId);
     }
 
     /// @inheritdoc INFTCollection
-    function safeMint(address) external onlyOwner returns (uint256) {
-        revert NotImplemented();
+    function safeMint(address to) external onlyOwner returns (uint256 tokenId) {
+        tokenId = _reserveMint(to, 1);
+        _safeMint(to, tokenId);
     }
 
     /// @inheritdoc INFTCollection
-    function mintBatch(address, uint256) external onlyOwner returns (uint256) {
-        revert NotImplemented();
+    function mintBatch(address to, uint256 quantity) external onlyOwner returns (uint256 firstTokenId) {
+        firstTokenId = _reserveMint(to, quantity);
+
+        uint256 end = firstTokenId + quantity;
+        unchecked {
+            for (uint256 tokenId = firstTokenId; tokenId < end; ++tokenId) {
+                _mint(to, tokenId);
+            }
+        }
+
+        emit BatchMinted(to, firstTokenId, quantity);
     }
 
     /// @inheritdoc INFTCollection
-    function safeMintBatch(address, uint256) external onlyOwner returns (uint256) {
-        revert NotImplemented();
+    function safeMintBatch(address to, uint256 quantity) external onlyOwner returns (uint256 firstTokenId) {
+        firstTokenId = _reserveMint(to, quantity);
+
+        uint256 end = firstTokenId + quantity;
+        unchecked {
+            for (uint256 tokenId = firstTokenId; tokenId < end; ++tokenId) {
+                _safeMint(to, tokenId);
+            }
+        }
+
+        emit BatchMinted(to, firstTokenId, quantity);
     }
 
+    // -------------------------------------------------------------------------
+    // Admin — URI (onlyOwner); royalty admin en Fase 3
+    // -------------------------------------------------------------------------
+
     /// @inheritdoc INFTCollection
-    function setBaseURI(string calldata) external onlyOwner {
-        revert NotImplemented();
+    function setBaseURI(string calldata uri) external onlyOwner {
+        _baseTokenURI = uri;
+        emit BaseURIUpdated(uri);
     }
 
     /// @inheritdoc INFTCollection
@@ -115,14 +145,27 @@ contract NFTCollection is INFTCollection, ERC721, ERC2981, Ownable2Step {
         revert NotImplemented();
     }
 
-    /// @inheritdoc INFTCollection
-    function tokenURI(uint256 tokenId) public view override(ERC721, INFTCollection) returns (string memory) {
-        return super.tokenURI(tokenId);
-    }
+    // -------------------------------------------------------------------------
+    // Internos
+    // -------------------------------------------------------------------------
 
-    // -------------------------------------------------------------------------
-    // Overrides internos
-    // -------------------------------------------------------------------------
+    /**
+     * @dev Valida destino y supply; reserva `quantity` ids y actualiza contadores.
+     * @param to Destinatario de los tokens.
+     * @param quantity Cantidad a mintear (`> 0`).
+     * @return firstTokenId Primer `tokenId` reservado.
+     */
+    function _reserveMint(address to, uint256 quantity) internal returns (uint256 firstTokenId) {
+        if (to == address(0)) revert ZeroAddress();
+        if (quantity == 0) revert MintZeroQuantity();
+        if (_totalMinted + quantity > MAX_SUPPLY) revert MaxSupplyExceeded();
+
+        firstTokenId = _nextTokenId;
+        unchecked {
+            _nextTokenId += quantity;
+            _totalMinted += quantity;
+        }
+    }
 
     /// @dev Concatena `_baseTokenURI` + `tokenId` vía `ERC721.tokenURI`.
     function _baseURI() internal view override returns (string memory) {

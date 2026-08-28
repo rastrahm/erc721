@@ -1,12 +1,141 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.24;
 
+import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import {ERC2981} from "@openzeppelin/contracts/token/common/ERC2981.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {Ownable2Step} from "@openzeppelin/contracts/access/Ownable2Step.sol";
+
+import {INFTCollection} from "./interfaces/INFTCollection.sol";
+
 /**
  * @title NFTCollection
- * @notice Placeholder Fase 0 — colección ERC-721 gas-optimizada con royalties ERC-2981.
- * @dev Implementación completa en Fases 1–3. Ver `doc/00-plan-implementacion.md`.
+ * @notice Colección ERC-721 gas-optimizada con batch mint, base URI dinámica y ERC-2981.
+ * @dev Fase 1: esqueleto con constructor y views; mutators de mint/admin → `NotImplemented`.
+ *      Implementación completa en Fases 2–3. Ver `doc/00-plan-implementacion.md`.
+ *
+ * Layout: interfaz → herencia OZ → estado → constructor → views → mutators → overrides.
  */
-contract NFTCollection {
-    /// @notice Identificador de módulo para smoke test de bootstrap.
+contract NFTCollection is INFTCollection, ERC721, ERC2981, Ownable2Step {
+    /// @notice Identificador de módulo (smoke test bootstrap).
     string public constant MODULE_ID = "04-erc721";
+
+    /// @notice Techo de supply de la colección.
+    uint256 private immutable MAX_SUPPLY;
+
+    /// @notice Tokens minteados hasta el momento.
+    uint256 private _totalMinted;
+
+    /// @notice Siguiente `tokenId` a asignar (inicia en 0).
+    uint256 private _nextTokenId;
+
+    /// @notice Raíz de metadata on-chain.
+    string private _baseTokenURI;
+
+    /**
+     * @notice Despliega la colección con metadata, supply cap y royalty por defecto.
+     * @param name_ Nombre ERC-721.
+     * @param symbol_ Símbolo ERC-721.
+     * @param maxSupply_ Máximo de tokens minteables (`> 0`).
+     * @param baseURI_ Raíz de metadata (convención: terminar en `/`).
+     * @param royaltyReceiver_ Beneficiario ERC-2981.
+     * @param royaltyFeeNumerator_ Fee en basis points (denominador 10000).
+     * @param owner_ Owner inicial (`Ownable2Step`).
+     */
+    constructor(
+        string memory name_,
+        string memory symbol_,
+        uint256 maxSupply_,
+        string memory baseURI_,
+        address royaltyReceiver_,
+        uint96 royaltyFeeNumerator_,
+        address owner_
+    ) ERC721(name_, symbol_) Ownable(owner_) {
+        if (maxSupply_ == 0) revert MintZeroQuantity();
+        if (owner_ == address(0)) revert ZeroAddress();
+        if (royaltyReceiver_ == address(0)) revert ZeroAddress();
+
+        MAX_SUPPLY = maxSupply_;
+        _baseTokenURI = baseURI_;
+        _setDefaultRoyalty(royaltyReceiver_, royaltyFeeNumerator_);
+
+        emit RoyaltyUpdated(royaltyReceiver_, royaltyFeeNumerator_);
+    }
+
+    // -------------------------------------------------------------------------
+    // Views — supply y metadata
+    // -------------------------------------------------------------------------
+
+    /// @inheritdoc INFTCollection
+    function maxSupply() external view returns (uint256) {
+        return MAX_SUPPLY;
+    }
+
+    /// @inheritdoc INFTCollection
+    function totalSupply() external view returns (uint256) {
+        return _totalMinted;
+    }
+
+    /// @inheritdoc INFTCollection
+    function baseURI() external view returns (string memory) {
+        return _baseTokenURI;
+    }
+
+    // -------------------------------------------------------------------------
+    // Mutators — Fase 1: NotImplemented
+    // -------------------------------------------------------------------------
+
+    /// @inheritdoc INFTCollection
+    function mint(address) external onlyOwner returns (uint256) {
+        revert NotImplemented();
+    }
+
+    /// @inheritdoc INFTCollection
+    function safeMint(address) external onlyOwner returns (uint256) {
+        revert NotImplemented();
+    }
+
+    /// @inheritdoc INFTCollection
+    function mintBatch(address, uint256) external onlyOwner returns (uint256) {
+        revert NotImplemented();
+    }
+
+    /// @inheritdoc INFTCollection
+    function safeMintBatch(address, uint256) external onlyOwner returns (uint256) {
+        revert NotImplemented();
+    }
+
+    /// @inheritdoc INFTCollection
+    function setBaseURI(string calldata) external onlyOwner {
+        revert NotImplemented();
+    }
+
+    /// @inheritdoc INFTCollection
+    function setDefaultRoyalty(address, uint96) external onlyOwner {
+        revert NotImplemented();
+    }
+
+    /// @inheritdoc INFTCollection
+    function tokenURI(uint256 tokenId) public view override(ERC721, INFTCollection) returns (string memory) {
+        return super.tokenURI(tokenId);
+    }
+
+    // -------------------------------------------------------------------------
+    // Overrides internos
+    // -------------------------------------------------------------------------
+
+    /// @dev Concatena `_baseTokenURI` + `tokenId` vía `ERC721.tokenURI`.
+    function _baseURI() internal view override returns (string memory) {
+        return _baseTokenURI;
+    }
+
+    /// @dev ERC-165 + ERC-721 + ERC-2981 vía herencia OZ.
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        override(ERC721, ERC2981)
+        returns (bool)
+    {
+        return super.supportsInterface(interfaceId);
+    }
 }

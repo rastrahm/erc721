@@ -2,7 +2,7 @@
 
 Colección NFT **ERC-721** gas-optimizada con mint por lotes, base URI dinámica y royalties **ERC-2981**. Solidity `0.8.24` + Foundry.
 
-**Estado:** Fase **0** ✅ (bootstrap). Fases 1–7 🔒 pendientes.
+**Estado:** Fases **0–1** ✅. Fases 2–7 🔒 pendientes.
 
 ---
 
@@ -53,4 +53,4 @@ doc/           # Plan, diagramas
 
 ## Próximo paso
 
-Autorizar **Fase 1** (diseño on-chain + TDD): `Autorizo Fase 1`
+Autorizar **Fase 2** (core ERC-721 + mint/batch + URI): `Autorizo Fase 2`

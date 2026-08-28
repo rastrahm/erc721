@@ -2,7 +2,7 @@
 
 Documento maestro del módulo. Define fases, entregables, criterios de aceptación y el **protocolo de autorización** usado durante el desarrollo.
 
-> **Estado actual:** Fase **0** ✅ (2026-08-28). Fases **1–7** 🔒 pendientes de autorización.
+> **Estado actual:** Fases **0–1** ✅ (2026-08-28). Fases **2–7** 🔒 pendientes de autorización.
 
 ---
 
@@ -149,7 +149,7 @@ royalty feeNumerator <= feeDenominator (típicamente 10000)
 | Fase | Nombre | Estado |
 |------|--------|--------|
 | 0 | Bootstrap Foundry + docs | ✅ Aprobada (2026-08-28) |
-| 1 | Diseño on-chain: interfaces, errores + tests rojos | 🔒 Pendiente |
+| 1 | Diseño on-chain: interfaces, errores + tests rojos | ✅ Aprobada (2026-08-28) |
 | 2 | Implementación core ERC-721 + mint/batch + URI | 🔒 Pendiente |
 | 3 | ERC-2981 royalties + Ownable2Step admin | 🔒 Pendiente |
 | 4 | Fuzz + safe-receiver / ataques + gas report | 🔒 Pendiente |
@@ -204,9 +204,9 @@ Inicializar Foundry, pinnear OZ v5, fijar `0.8.24`, dejar layout listo. La carpe
 
 ### Fase 1 — Diseño on-chain + TDD (tests primero)
 
-**Estado:** 🔒 Pendiente  
+**Estado:** ✅ Aprobada — 2026-08-28  
 **Duración estimada:** 1 día  
-**Depende de:** Fase 0
+**Depende de:** Fase 0 ✅
 
 #### Objetivo
 
@@ -222,17 +222,27 @@ Congelar interfaz, errores, eventos y política de URI/royalty; escribir tests q
 
 #### Criterios de aceptación
 
-- [ ] Interfaces compilables.
-- [ ] Solo custom errors (sin `require` strings).
-- [ ] Tests unitarios escritos para mint → transfer → URI → royalty (rojos hasta Fase 2/3).
-- [ ] Decisiones de diseño documentadas en este plan / diagramas.
+- [x] Interfaces compilables.
+- [x] Solo custom errors (sin `require` strings).
+- [x] Tests unitarios escritos para mint → transfer → URI → royalty (rojos hasta Fase 2/3).
+- [x] Decisiones de diseño documentadas en este plan / diagramas.
+
+#### Resultado
+
+- `src/interfaces/INFTCollection.sol` — events, errors, views, mutators, NatSpec + decisiones v1.
+- `src/NFTCollection.sol` — esqueleto ERC721 + ERC2981 + Ownable2Step; constructor y views; mutators → `NotImplemented`.
+- `src/mocks/MockERC721Receiver.sol` — receiver configurable (acepta / revierte).
+- `src/mocks/MockERC721NonReceiver.sol` — contrato sin hook.
+- `test/NFTCollection.t.sol` — **14 tests verdes** (constructor, interfaces, royalty, NotImplemented).
+- `test/unit/NFTCollection.lifecycle.t.sol` — **7 tests rojos** TDD (mint, batch, URI, transfer, safe receiver, supply).
+- Decisiones: `tokenId` desde **0**; `tokenURI = baseURI + toString(id)`; mint **onlyOwner**; fee denominator **10000** (OZ).
 
 #### Aprobación
 
-- [ ] Autorizada para ejecutar  
-- [ ] Completada y revisada → ✅ fecha
+- [x] Autorizada para ejecutar  
+- [x] Completada y revisada → ✅ 2026-08-28
 
-> **No iniciar sin:** `Autorizo Fase 1`
+> Responde cuando quieras iniciar la **Fase 2**: `Autorizo Fase 2`
 
 ---
 
@@ -435,7 +445,7 @@ Alinear diagramas con código final; README usable por un tercero.
 
 ```text
 [x] Fase 0  Bootstrap Foundry          → ✅ 2026-08-28
-[ ] Fase 1  Diseño + TDD               → 🔒
+[x] Fase 1  Diseño + TDD               → ✅ 2026-08-28
 [ ] Fase 2  Core mint/URI + unit       → 🔒
 [ ] Fase 3  ERC-2981 + Ownable2Step    → 🔒
 [ ] Fase 4  Fuzz / safe / gas          → 🔒
@@ -476,5 +486,5 @@ Alinear diagramas con código final; README usable por un tercero.
 
 ## 10. Próximo paso inmediato
 
-**Documentación y bootstrap listos.**  
-Para continuar con diseño on-chain + TDD: responde **`Autorizo Fase 1`**.
+**Fase 1 cerrada.** Diseño on-chain congelado; lifecycle tests en rojo.  
+Para implementar mint/batch/URI: responde **`Autorizo Fase 2`**.

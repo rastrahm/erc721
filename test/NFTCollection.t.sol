@@ -110,10 +110,16 @@ contract NFTCollectionDesignTest is Test {
         assertEq(collection.tokenURI(0), "https://new.example/0");
     }
 
-    function test_setDefaultRoyalty_revertsNotImplemented() public {
+    function test_setDefaultRoyalty_updatesRoyaltyInfo() public {
+        address newReceiver = makeAddr("newReceiver");
+        uint96 newFee = 250;
+
         vm.prank(owner);
-        vm.expectRevert(INFTCollection.NotImplemented.selector);
-        collection.setDefaultRoyalty(royaltyReceiver, 250);
+        collection.setDefaultRoyalty(newReceiver, newFee);
+
+        (address receiver, uint256 amount) = collection.royaltyInfo(0, SALE_PRICE);
+        assertEq(receiver, newReceiver);
+        assertEq(amount, (SALE_PRICE * newFee) / 10_000);
     }
 
     function test_mint_revertsWhenNotOwner() public {

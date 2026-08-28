@@ -2,7 +2,7 @@
 
 Documento maestro del módulo. Define fases, entregables, criterios de aceptación y el **protocolo de autorización** usado durante el desarrollo.
 
-> **Estado actual:** Solo documentación inicial. Fases **0–7** 🔒 pendientes de autorización.
+> **Estado actual:** Fase **0** ✅ (2026-08-28). Fases **1–7** 🔒 pendientes de autorización.
 
 ---
 
@@ -148,7 +148,7 @@ royalty feeNumerator <= feeDenominator (típicamente 10000)
 
 | Fase | Nombre | Estado |
 |------|--------|--------|
-| 0 | Bootstrap Foundry + docs | 🔒 Pendiente de autorización |
+| 0 | Bootstrap Foundry + docs | ✅ Aprobada (2026-08-28) |
 | 1 | Diseño on-chain: interfaces, errores + tests rojos | 🔒 Pendiente |
 | 2 | Implementación core ERC-721 + mint/batch + URI | 🔒 Pendiente |
 | 3 | ERC-2981 royalties + Ownable2Step admin | 🔒 Pendiente |
@@ -161,7 +161,7 @@ royalty feeNumerator <= feeDenominator (típicamente 10000)
 
 ### Fase 0 — Bootstrap del módulo
 
-**Estado:** 🔒 Pendiente de autorización  
+**Estado:** ✅ Aprobada — 2026-08-28  
 **Duración estimada:** 0.5 día
 
 #### Objetivo
@@ -178,17 +178,27 @@ Inicializar Foundry, pinnear OZ v5, fijar `0.8.24`, dejar layout listo. La carpe
 
 #### Criterios de aceptación
 
-- [ ] Compila sin errores.
-- [ ] Pragma fijo `0.8.24`.
-- [ ] Dependencias OZ instaladas.
-- [ ] `doc/` presente y referenciado en README.
+- [x] Compila sin errores.
+- [x] Pragma fijo `0.8.24`.
+- [x] Dependencias OZ instaladas.
+- [x] `doc/` presente y referenciado en README.
+
+#### Resultado
+
+- Foundry `1.4.3-stable` con `forge init --no-git --force`.
+- `foundry.toml`: `solc = 0.8.24`, `evm_version = cancun`, fuzz `runs = 1000`, invariant configurado.
+- Dependencias: `forge-std` + `openzeppelin-contracts@v5.0.2`.
+- Placeholder: `src/NFTCollection.sol`, `test/NFTCollection.t.sol`, `script/Deploy.s.sol`.
+- Layout: `src/interfaces/`, `src/mocks/`, `test/{unit,fuzz}/`, `doc/`, `.env.example`, `README.md`.
+- `forge build` OK; `forge test` → 1 passed (`test_moduleId`).
+- Nota: usar `export PATH="$HOME/.foundry/bin:$PATH"` (el `forge` de npm choca con Foundry).
 
 #### Aprobación
 
-- [ ] Autorizada para ejecutar  
-- [ ] Completada y revisada → ✅ fecha
+- [x] Autorizada para ejecutar  
+- [x] Completada y revisada → ✅ 2026-08-28
 
-> Responde cuando quieras iniciar: **`Autorizo Fase 0`**
+> Responde cuando quieras iniciar la **Fase 1**: `Autorizo Fase 1`
 
 ---
 
@@ -424,7 +434,7 @@ Alinear diagramas con código final; README usable por un tercero.
 ## 7. Checklist de avance
 
 ```text
-[ ] Fase 0  Bootstrap Foundry          → 🔒
+[x] Fase 0  Bootstrap Foundry          → ✅ 2026-08-28
 [ ] Fase 1  Diseño + TDD               → 🔒
 [ ] Fase 2  Core mint/URI + unit       → 🔒
 [ ] Fase 3  ERC-2981 + Ownable2Step    → 🔒
@@ -466,5 +476,5 @@ Alinear diagramas con código final; README usable por un tercero.
 
 ## 10. Próximo paso inmediato
 
-**Documentación de planificación y diagramas lista.**  
-Para empezar implementación: responde **`Autorizo Fase 0`**.
+**Documentación y bootstrap listos.**  
+Para continuar con diseño on-chain + TDD: responde **`Autorizo Fase 1`**.

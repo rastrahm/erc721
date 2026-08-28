@@ -2,7 +2,7 @@
 
 Documento maestro del módulo. Define fases, entregables, criterios de aceptación y el **protocolo de autorización** usado durante el desarrollo.
 
-> **Estado actual:** Fases **0–4** ✅ (2026-08-28). Fases **5–7** 🔒 pendientes de autorización.
+> **Estado actual:** Fases **0–5** ✅ (2026-08-28). Fases **6–7** 🔒 pendientes de autorización.
 
 ---
 
@@ -153,7 +153,7 @@ royalty feeNumerator <= feeDenominator (típicamente 10000)
 | 2 | Implementación core ERC-721 + mint/batch + URI | ✅ Aprobada (2026-08-28) |
 | 3 | ERC-2981 royalties + Ownable2Step admin | ✅ Aprobada (2026-08-28) |
 | 4 | Fuzz + safe-receiver / ataques + gas report | ✅ Aprobada (2026-08-28) |
-| 5 | Scripts deploy + ABI | 🔒 Pendiente |
+| 5 | Scripts deploy + ABI | ✅ Aprobada (2026-08-28) |
 | 6 | Frontend demo (opcional) | 🔒 Pendiente |
 | 7 | Docs finales, handoff, alineación diagramas | 🔒 Pendiente |
 
@@ -378,9 +378,9 @@ Endurecer propiedades de supply, ownership y seguridad de safe transfers.
 
 ### Fase 5 — Deploy scripts + ABI
 
-**Estado:** 🔒 Pendiente  
+**Estado:** ✅ Aprobada — 2026-08-28  
 **Duración estimada:** 0.5 día  
-**Depende de:** Fase 4
+**Depende de:** Fase 4 ✅
 
 #### Objetivo
 
@@ -395,15 +395,22 @@ Deploy reproducible en Anvil/testnet y export de ABI para UI.
 
 #### Criterios de aceptación
 
-- [ ] Deploy script verde en Anvil.
-- [ ] Addresses + ABI documentados.
+- [x] Deploy script verde en Anvil.
+- [x] Addresses + ABI documentados.
+
+#### Resultado
+
+- `script/Deploy.s.sol` — env `INITIAL_OWNER`, `COLLECTION_*`, `MAX_SUPPLY`, `BASE_URI`, `ROYALTY_*`.
+- `script/export-abi.sh` → `doc/abi/` + `frontend/abi/` (`NFTCollection`, `INFTCollection`).
+- `doc/DEPLOY.md` — playbook Anvil, testnet, `cast` post-deploy.
+- Verificado Anvil chain 31337: `NFTCollection` `0x5FbDB2315678afecb367f032d93F642f64180aa3` (primera deploy local).
 
 #### Aprobación
 
-- [ ] Autorizada para ejecutar  
-- [ ] Completada y revisada → ✅ fecha
+- [x] Autorizada para ejecutar  
+- [x] Completada y revisada → ✅ 2026-08-28
 
-> **No iniciar sin:** `Autorizo Fase 5`
+> Responde cuando quieras iniciar la **Fase 6**: `Autorizo Fase 6` (o `Omitir Fase 6`)
 
 ---
 
@@ -479,7 +486,7 @@ Alinear diagramas con código final; README usable por un tercero.
 [x] Fase 2  Core mint/URI + unit       → ✅ 2026-08-28
 [x] Fase 3  ERC-2981 + Ownable2Step    → ✅ 2026-08-28
 [x] Fase 4  Fuzz / safe / gas / SWC    → ✅ 2026-08-28
-[ ] Fase 5  Deploy + ABI               → 🔒
+[x] Fase 5  Deploy + ABI               → ✅ 2026-08-28
 [ ] Fase 6  Frontend (opcional)        → 🔒
 [ ] Fase 7  Docs finales               → 🔒
 ```
@@ -516,5 +523,5 @@ Alinear diagramas con código final; README usable por un tercero.
 
 ## 10. Próximo paso inmediato
 
-**Fase 4 cerrada.** Fuzz, invariantes, ataques, SWC y gas documentados.  
-Para deploy y ABI: responde **`Autorizo Fase 5`**.
+**Fase 5 cerrada.** Deploy y ABIs listos.  
+Para demo UI: **`Autorizo Fase 6`** o **`Omitir Fase 6`** para ir a Fase 7.

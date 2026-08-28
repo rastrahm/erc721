@@ -1,0 +1,32 @@
+# .cursorrules — Module 04: ERC-721 NFT Collection & Royalty Standard
+
+## MODULE OVERVIEW
+Focus on building a gas-optimized ERC-721 NFT collection with batch minting capabilities, dynamic base URI management, and ERC-2981 royalty support using Foundry and Solidity 0.8.24.
+
+---
+
+## 1. TECHNICAL CONSTRAINTS & STACK
+
+- **Compiler Version:** Strictly `pragma solidity 0.8.24;` (no floating pragmas).
+- **Tooling:** Foundry (`forge` for testing, gas reporting, and fuzzing).
+- **Standards Implemented:**
+  - Standard ERC-721 (OwnerOf, TransferFrom, Approve, SetApprovalForAll).
+  - ERC-165 (SupportsInterface verification).
+  - ERC-2981 (On-Chain Royalty Standard).
+
+---
+
+## 2. CODING & GAS OPTIMIZATION RULES
+
+- **Custom Errors:** Replace standard `require` strings with custom errors (`error TokenDoesNotExist()`, `error MaxSupplyExceeded()`, `error MintZeroQuantity()`, `error Unauthorized()`).
+- **Batch Minting Guard:** Optimize state writes using unchecked increment loops for supply tracking where max bounds are verified upfront.
+- **Safe Transfer Verification:** Enforce `onERC721Received` checks when target is a contract address to prevent locked tokens.
+- **Access Control:** Implement `Ownable2Step` for administrative functions (URI update, royalty configuration, supply caps).
+
+---
+
+## 3. TESTING REQUIREMENTS
+
+- **Foundry Unit Tests:** Validate single/batch minting, token transfers, approval flows, and metadata URI resolution.
+- **Interface Verification:** Test `supportsInterface()` for ERC-165, ERC-721, and ERC-2981 interface IDs.
+- **Reentrancy & Safe Mint:** Test minting to non-receiver smart contracts to ensure explicit reverts on failed `onERC721Received` hooks.

@@ -11,7 +11,7 @@ import {INFTCollection} from "./interfaces/INFTCollection.sol";
 /**
  * @title NFTCollection
  * @notice Colección ERC-721 gas-optimizada con batch mint, base URI dinámica y ERC-2981.
- * @dev Fase 3: royalties ERC-2981 admin + Ownable2Step. Ver `doc/00-plan-implementacion.md`.
+ * @dev Fase 4: fuzz/invariant/attack + SWC audit. Ver `doc/00-plan-implementacion.md`.
  *
  * Layout: interfaz → herencia OZ → estado → constructor → views → mutators → overrides.
  */

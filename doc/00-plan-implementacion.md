@@ -2,7 +2,7 @@
 
 Documento maestro del módulo. Define fases, entregables, criterios de aceptación y el **protocolo de autorización** usado durante el desarrollo.
 
-> **Estado actual:** Fases **0–3** ✅ (2026-08-28). Fases **4–7** 🔒 pendientes de autorización.
+> **Estado actual:** Fases **0–5** ✅ (2026-08-28). Fases **6–7** 🔒 pendientes de autorización.
 
 ---
 
@@ -152,8 +152,8 @@ royalty feeNumerator <= feeDenominator (típicamente 10000)
 | 1 | Diseño on-chain: interfaces, errores + tests rojos | ✅ Aprobada (2026-08-28) |
 | 2 | Implementación core ERC-721 + mint/batch + URI | ✅ Aprobada (2026-08-28) |
 | 3 | ERC-2981 royalties + Ownable2Step admin | ✅ Aprobada (2026-08-28) |
-| 4 | Fuzz + safe-receiver / ataques + gas report | 🔒 Pendiente |
-| 5 | Scripts deploy + ABI | 🔒 Pendiente |
+| 4 | Fuzz + safe-receiver / ataques + gas report | ✅ Aprobada (2026-08-28) |
+| 5 | Scripts deploy + ABI | ✅ Aprobada (2026-08-28) |
 | 6 | Frontend demo (opcional) | 🔒 Pendiente |
 | 7 | Docs finales, handoff, alineación diagramas | 🔒 Pendiente |
 
@@ -332,9 +332,9 @@ Royalties on-chain y control administrativo robusto.
 
 ### Fase 4 — Fuzz, safe-receiver, ataques, gas
 
-**Estado:** 🔒 Pendiente  
+**Estado:** ✅ Aprobada — 2026-08-28  
 **Duración estimada:** 1–2 días  
-**Depende de:** Fase 3
+**Depende de:** Fase 3 ✅
 
 #### Objetivo
 
@@ -347,27 +347,40 @@ Endurecer propiedades de supply, ownership y seguridad de safe transfers.
 3. Ataque: mint/transfer a contrato sin receiver; callback malicioso si se autoriza.
 4. `forge test --gas-report` y notas de tradeoffs.
 5. Cobertura de paths de error custom.
+6. Auditoría SWC + campañas de ataque (`doc/SWC-AUDIT.md`, `doc/ATAQUES.md`).
 
 #### Criterios de aceptación
 
-- [ ] Fuzz ≥ 1000 runs sin rotura de invariante de supply.
-- [ ] Non-receiver revierte de forma explícita.
-- [ ] Gas report baseline documentado (`doc/GAS.md` cuando se autorice).
+- [x] Fuzz ≥ 1000 runs sin rotura de invariante de supply.
+- [x] Non-receiver revierte de forma explícita.
+- [x] Gas report baseline documentado (`doc/GAS.md`).
+- [x] Matriz SWC-100–136 y mapeo a tests.
+
+#### Resultado
+
+- `test/fuzz/NFTCollection.fuzz.t.sol` — 5 fuzz × 1000 runs.
+- `test/invariant/` — handler + 3 invariantes (256 runs / 3840 calls).
+- `test/attack/SafeTransferAttack.t.sol` — 11 tests (non-receiver, reentrancy, auth).
+- `src/mocks/MockERC721ReceiverReentrant.sol` — callback malicioso.
+- `doc/SWC-AUDIT.md` — matriz SWC alineada a `01-erc20` / `03-staking`.
+- `doc/ATAQUES.md` — campañas A–F con mapeo a tests.
+- `doc/GAS.md` — baseline deploy ~1.71M gas.
+- Suite total: **58 tests** verdes.
 
 #### Aprobación
 
-- [ ] Autorizada para ejecutar  
-- [ ] Completada y revisada → ✅ fecha
+- [x] Autorizada para ejecutar  
+- [x] Completada y revisada → ✅ 2026-08-28
 
-> **No iniciar sin:** `Autorizo Fase 4`
+> Responde cuando quieras iniciar la **Fase 5**: `Autorizo Fase 5`
 
 ---
 
 ### Fase 5 — Deploy scripts + ABI
 
-**Estado:** 🔒 Pendiente  
+**Estado:** ✅ Aprobada — 2026-08-28  
 **Duración estimada:** 0.5 día  
-**Depende de:** Fase 4
+**Depende de:** Fase 4 ✅
 
 #### Objetivo
 
@@ -382,15 +395,22 @@ Deploy reproducible en Anvil/testnet y export de ABI para UI.
 
 #### Criterios de aceptación
 
-- [ ] Deploy script verde en Anvil.
-- [ ] Addresses + ABI documentados.
+- [x] Deploy script verde en Anvil.
+- [x] Addresses + ABI documentados.
+
+#### Resultado
+
+- `script/Deploy.s.sol` — env `INITIAL_OWNER`, `COLLECTION_*`, `MAX_SUPPLY`, `BASE_URI`, `ROYALTY_*`.
+- `script/export-abi.sh` → `doc/abi/` + `frontend/abi/` (`NFTCollection`, `INFTCollection`).
+- `doc/DEPLOY.md` — playbook Anvil, testnet, `cast` post-deploy.
+- Verificado Anvil chain 31337: `NFTCollection` `0x5FbDB2315678afecb367f032d93F642f64180aa3` (primera deploy local).
 
 #### Aprobación
 
-- [ ] Autorizada para ejecutar  
-- [ ] Completada y revisada → ✅ fecha
+- [x] Autorizada para ejecutar  
+- [x] Completada y revisada → ✅ 2026-08-28
 
-> **No iniciar sin:** `Autorizo Fase 5`
+> Responde cuando quieras iniciar la **Fase 6**: `Autorizo Fase 6` (o `Omitir Fase 6`)
 
 ---
 
@@ -465,8 +485,8 @@ Alinear diagramas con código final; README usable por un tercero.
 [x] Fase 1  Diseño + TDD               → ✅ 2026-08-28
 [x] Fase 2  Core mint/URI + unit       → ✅ 2026-08-28
 [x] Fase 3  ERC-2981 + Ownable2Step    → ✅ 2026-08-28
-[ ] Fase 4  Fuzz / safe / gas          → 🔒
-[ ] Fase 5  Deploy + ABI               → 🔒
+[x] Fase 4  Fuzz / safe / gas / SWC    → ✅ 2026-08-28
+[x] Fase 5  Deploy + ABI               → ✅ 2026-08-28
 [ ] Fase 6  Frontend (opcional)        → 🔒
 [ ] Fase 7  Docs finales               → 🔒
 ```
@@ -503,5 +523,5 @@ Alinear diagramas con código final; README usable por un tercero.
 
 ## 10. Próximo paso inmediato
 
-**Fase 3 cerrada.** Royalties admin y Ownable2Step verificados.  
-Para fuzz, invariantes y gas report: responde **`Autorizo Fase 4`**.
+**Fase 5 cerrada.** Deploy y ABIs listos.  
+Para demo UI: **`Autorizo Fase 6`** o **`Omitir Fase 6`** para ir a Fase 7.

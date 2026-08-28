@@ -2,7 +2,7 @@
 
 Documento maestro del módulo. Define fases, entregables, criterios de aceptación y el **protocolo de autorización** usado durante el desarrollo.
 
-> **Estado actual:** Fases **0–1** ✅ (2026-08-28). Fases **2–7** 🔒 pendientes de autorización.
+> **Estado actual:** Fases **0–2** ✅ (2026-08-28). Fases **3–7** 🔒 pendientes de autorización.
 
 ---
 
@@ -150,7 +150,7 @@ royalty feeNumerator <= feeDenominator (típicamente 10000)
 |------|--------|--------|
 | 0 | Bootstrap Foundry + docs | ✅ Aprobada (2026-08-28) |
 | 1 | Diseño on-chain: interfaces, errores + tests rojos | ✅ Aprobada (2026-08-28) |
-| 2 | Implementación core ERC-721 + mint/batch + URI | 🔒 Pendiente |
+| 2 | Implementación core ERC-721 + mint/batch + URI | ✅ Aprobada (2026-08-28) |
 | 3 | ERC-2981 royalties + Ownable2Step admin | 🔒 Pendiente |
 | 4 | Fuzz + safe-receiver / ataques + gas report | 🔒 Pendiente |
 | 5 | Scripts deploy + ABI | 🔒 Pendiente |
@@ -248,9 +248,9 @@ Congelar interfaz, errores, eventos y política de URI/royalty; escribir tests q
 
 ### Fase 2 — Core ERC-721 + mint/batch + URI
 
-**Estado:** 🔒 Pendiente  
+**Estado:** ✅ Aprobada — 2026-08-28  
 **Duración estimada:** 1–2 días  
-**Depende de:** Fase 1
+**Depende de:** Fase 1 ✅
 
 #### Objetivo
 
@@ -266,17 +266,26 @@ Implementar mint individual/batch, metadata URI, transfers y approvals con CEI d
 
 #### Criterios de aceptación
 
-- [ ] `totalSupply` nunca supera `maxSupply`.
-- [ ] Batch mint emite transfers coherentes y actualiza balances.
-- [ ] `tokenURI` refleja `baseURI` actualizada.
-- [ ] NatSpec en públicas/externas.
+- [x] `totalSupply` nunca supera `maxSupply`.
+- [x] Batch mint emite transfers coherentes y actualiza balances.
+- [x] `tokenURI` refleja `baseURI` actualizada.
+- [x] NatSpec en públicas/externas.
+
+#### Resultado
+
+- `NFTCollection.sol`: `_reserveMint` centraliza guards; mint/batch con loop `unchecked`; `setBaseURI` + evento.
+- `setDefaultRoyalty` sigue en `NotImplemented` (Fase 3).
+- `test/unit/NFTCollection.lifecycle.t.sol` — **7 tests verdes**.
+- `test/unit/NFTCollection.core.t.sol` — **8 tests** (mint, batch event, approve, setApprovalForAll).
+- `test/NFTCollection.t.sol` — actualizado (12 tests verdes).
+- Suite total: **27 tests** verdes.
 
 #### Aprobación
 
-- [ ] Autorizada para ejecutar  
-- [ ] Completada y revisada → ✅ fecha
+- [x] Autorizada para ejecutar  
+- [x] Completada y revisada → ✅ 2026-08-28
 
-> **No iniciar sin:** `Autorizo Fase 2`
+> Responde cuando quieras iniciar la **Fase 3**: `Autorizo Fase 3`
 
 ---
 
@@ -446,7 +455,7 @@ Alinear diagramas con código final; README usable por un tercero.
 ```text
 [x] Fase 0  Bootstrap Foundry          → ✅ 2026-08-28
 [x] Fase 1  Diseño + TDD               → ✅ 2026-08-28
-[ ] Fase 2  Core mint/URI + unit       → 🔒
+[x] Fase 2  Core mint/URI + unit       → ✅ 2026-08-28
 [ ] Fase 3  ERC-2981 + Ownable2Step    → 🔒
 [ ] Fase 4  Fuzz / safe / gas          → 🔒
 [ ] Fase 5  Deploy + ABI               → 🔒
@@ -486,5 +495,5 @@ Alinear diagramas con código final; README usable por un tercero.
 
 ## 10. Próximo paso inmediato
 
-**Fase 1 cerrada.** Diseño on-chain congelado; lifecycle tests en rojo.  
-Para implementar mint/batch/URI: responde **`Autorizo Fase 2`**.
+**Fase 2 cerrada.** Mint, batch, URI y approvals operativos.  
+Para royalties admin y tests de interfaces: responde **`Autorizo Fase 3`**.

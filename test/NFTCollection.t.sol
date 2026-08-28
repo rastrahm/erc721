@@ -89,28 +89,25 @@ contract NFTCollectionDesignTest is Test {
         collection.tokenURI(0);
     }
 
-    function test_mint_revertsNotImplemented() public {
+    function test_mint_mintsToRecipient() public {
         vm.prank(owner);
-        vm.expectRevert(INFTCollection.NotImplemented.selector);
+        uint256 tokenId = collection.mint(alice);
+
+        assertEq(tokenId, 0);
+        assertEq(collection.ownerOf(tokenId), alice);
+        assertEq(collection.totalSupply(), 1);
+        assertEq(collection.tokenURI(tokenId), string.concat(BASE_URI, "0"));
+    }
+
+    function test_setBaseURI_updatesStoredUri() public {
+        vm.prank(owner);
         collection.mint(alice);
-    }
 
-    function test_safeMint_revertsNotImplemented() public {
         vm.prank(owner);
-        vm.expectRevert(INFTCollection.NotImplemented.selector);
-        collection.safeMint(alice);
-    }
-
-    function test_mintBatch_revertsNotImplemented() public {
-        vm.prank(owner);
-        vm.expectRevert(INFTCollection.NotImplemented.selector);
-        collection.mintBatch(alice, 3);
-    }
-
-    function test_setBaseURI_revertsNotImplemented() public {
-        vm.prank(owner);
-        vm.expectRevert(INFTCollection.NotImplemented.selector);
         collection.setBaseURI("https://new.example/");
+
+        assertEq(collection.baseURI(), "https://new.example/");
+        assertEq(collection.tokenURI(0), "https://new.example/0");
     }
 
     function test_setDefaultRoyalty_revertsNotImplemented() public {

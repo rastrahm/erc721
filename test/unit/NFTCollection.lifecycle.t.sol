@@ -10,7 +10,7 @@ import {MockERC721NonReceiver} from "../../src/mocks/MockERC721NonReceiver.sol";
 
 /**
  * @title NFTCollectionLifecycleTest
- * @notice Lifecycle mint → URI → transfer → royalty (Fase 2/3). Tests **rojos** en Fase 1.
+ * @notice Lifecycle mint → URI → transfer → royalty (Fase 2+).
  */
 contract NFTCollectionLifecycleTest is Test {
     uint256 internal constant MAX_SUPPLY = 100;

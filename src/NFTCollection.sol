@@ -11,8 +11,7 @@ import {INFTCollection} from "./interfaces/INFTCollection.sol";
 /**
  * @title NFTCollection
  * @notice Colección ERC-721 gas-optimizada con batch mint, base URI dinámica y ERC-2981.
- * @dev Fase 2: mint individual/batch, URI dinámica y transfers estándar OZ.
- *      Royalties admin (`setDefaultRoyalty`) en Fase 3. Ver `doc/00-plan-implementacion.md`.
+ * @dev Fase 3: royalties ERC-2981 admin + Ownable2Step. Ver `doc/00-plan-implementacion.md`.
  *
  * Layout: interfaz → herencia OZ → estado → constructor → views → mutators → overrides.
  */
@@ -131,7 +130,7 @@ contract NFTCollection is INFTCollection, ERC721, ERC2981, Ownable2Step {
     }
 
     // -------------------------------------------------------------------------
-    // Admin — URI (onlyOwner); royalty admin en Fase 3
+    // Admin — URI y royalties (onlyOwner)
     // -------------------------------------------------------------------------
 
     /// @inheritdoc INFTCollection
@@ -141,8 +140,29 @@ contract NFTCollection is INFTCollection, ERC721, ERC2981, Ownable2Step {
     }
 
     /// @inheritdoc INFTCollection
-    function setDefaultRoyalty(address, uint96) external onlyOwner {
-        revert NotImplemented();
+    function setDefaultRoyalty(address receiver, uint96 feeNumerator) external onlyOwner {
+        _setDefaultRoyalty(receiver, feeNumerator);
+        emit RoyaltyUpdated(receiver, feeNumerator);
+    }
+
+    /// @inheritdoc INFTCollection
+    function setTokenRoyalty(uint256 tokenId, address receiver, uint96 feeNumerator) external onlyOwner {
+        _requireOwned(tokenId);
+        _setTokenRoyalty(tokenId, receiver, feeNumerator);
+        emit TokenRoyaltyUpdated(tokenId, receiver, feeNumerator);
+    }
+
+    /// @inheritdoc INFTCollection
+    function deleteDefaultRoyalty() external onlyOwner {
+        _deleteDefaultRoyalty();
+        emit RoyaltyUpdated(address(0), 0);
+    }
+
+    /// @inheritdoc INFTCollection
+    function resetTokenRoyalty(uint256 tokenId) external onlyOwner {
+        _requireOwned(tokenId);
+        _resetTokenRoyalty(tokenId);
+        emit TokenRoyaltyUpdated(tokenId, address(0), 0);
     }
 
     // -------------------------------------------------------------------------

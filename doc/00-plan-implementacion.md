@@ -2,7 +2,7 @@
 
 Documento maestro del módulo. Define fases, entregables, criterios de aceptación y el **protocolo de autorización** usado durante el desarrollo.
 
-> **Estado actual:** Fases **0–2** ✅ (2026-08-28). Fases **3–7** 🔒 pendientes de autorización.
+> **Estado actual:** Fases **0–3** ✅ (2026-08-28). Fases **4–7** 🔒 pendientes de autorización.
 
 ---
 
@@ -151,7 +151,7 @@ royalty feeNumerator <= feeDenominator (típicamente 10000)
 | 0 | Bootstrap Foundry + docs | ✅ Aprobada (2026-08-28) |
 | 1 | Diseño on-chain: interfaces, errores + tests rojos | ✅ Aprobada (2026-08-28) |
 | 2 | Implementación core ERC-721 + mint/batch + URI | ✅ Aprobada (2026-08-28) |
-| 3 | ERC-2981 royalties + Ownable2Step admin | 🔒 Pendiente |
+| 3 | ERC-2981 royalties + Ownable2Step admin | ✅ Aprobada (2026-08-28) |
 | 4 | Fuzz + safe-receiver / ataques + gas report | 🔒 Pendiente |
 | 5 | Scripts deploy + ABI | 🔒 Pendiente |
 | 6 | Frontend demo (opcional) | 🔒 Pendiente |
@@ -291,9 +291,9 @@ Implementar mint individual/batch, metadata URI, transfers y approvals con CEI d
 
 ### Fase 3 — ERC-2981 + admin Ownable2Step
 
-**Estado:** 🔒 Pendiente  
+**Estado:** ✅ Aprobada — 2026-08-28  
 **Duración estimada:** 1 día  
-**Depende de:** Fase 2
+**Depende de:** Fase 2 ✅
 
 #### Objetivo
 
@@ -309,16 +309,24 @@ Royalties on-chain y control administrativo robusto.
 
 #### Criterios de aceptación
 
-- [ ] `supportsInterface` verde para ERC-165, ERC-721, ERC-2981.
-- [ ] `royaltyInfo` calcula receiver + amount correctamente.
-- [ ] Solo owner (o pending→accept) administra URI/royalties/supply si aplica.
+- [x] `supportsInterface` verde para ERC-165, ERC-721, ERC-2981.
+- [x] `royaltyInfo` calcula receiver + amount correctamente.
+- [x] Solo owner (o pending→accept) administra URI/royalties/supply si aplica.
+
+#### Resultado
+
+- `setDefaultRoyalty`, `setTokenRoyalty`, `deleteDefaultRoyalty`, `resetTokenRoyalty` implementados.
+- Eventos `RoyaltyUpdated` y `TokenRoyaltyUpdated` en interfaz y contrato.
+- `supportsInterface` ya cubría 165/721/2981 vía OZ; tests con IDs hex explícitos.
+- `test/unit/NFTCollection.royalty.t.sol` — **12 tests** (royalty admin + Ownable2Step).
+- Suite total: **39 tests** verdes.
 
 #### Aprobación
 
-- [ ] Autorizada para ejecutar  
-- [ ] Completada y revisada → ✅ fecha
+- [x] Autorizada para ejecutar  
+- [x] Completada y revisada → ✅ 2026-08-28
 
-> **No iniciar sin:** `Autorizo Fase 3`
+> Responde cuando quieras iniciar la **Fase 4**: `Autorizo Fase 4`
 
 ---
 
@@ -456,7 +464,7 @@ Alinear diagramas con código final; README usable por un tercero.
 [x] Fase 0  Bootstrap Foundry          → ✅ 2026-08-28
 [x] Fase 1  Diseño + TDD               → ✅ 2026-08-28
 [x] Fase 2  Core mint/URI + unit       → ✅ 2026-08-28
-[ ] Fase 3  ERC-2981 + Ownable2Step    → 🔒
+[x] Fase 3  ERC-2981 + Ownable2Step    → ✅ 2026-08-28
 [ ] Fase 4  Fuzz / safe / gas          → 🔒
 [ ] Fase 5  Deploy + ABI               → 🔒
 [ ] Fase 6  Frontend (opcional)        → 🔒
@@ -495,5 +503,5 @@ Alinear diagramas con código final; README usable por un tercero.
 
 ## 10. Próximo paso inmediato
 
-**Fase 2 cerrada.** Mint, batch, URI y approvals operativos.  
-Para royalties admin y tests de interfaces: responde **`Autorizo Fase 3`**.
+**Fase 3 cerrada.** Royalties admin y Ownable2Step verificados.  
+Para fuzz, invariantes y gas report: responde **`Autorizo Fase 4`**.

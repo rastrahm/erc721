@@ -53,6 +53,12 @@ interface INFTCollection {
     /// @param feeNumerator Numerador en basis points (denominador 10000).
     event RoyaltyUpdated(address indexed receiver, uint96 feeNumerator);
 
+    /// @notice Emitido cuando se configura royalty por token.
+    /// @param tokenId NFT afectado.
+    /// @param receiver Beneficiario de royalties.
+    /// @param feeNumerator Fee en basis points.
+    event TokenRoyaltyUpdated(uint256 indexed tokenId, address indexed receiver, uint96 feeNumerator);
+
     // -------------------------------------------------------------------------
     // Errors
     // -------------------------------------------------------------------------
@@ -135,6 +141,19 @@ interface INFTCollection {
 
     /// @notice Configura royalty por defecto (ERC-2981).
     /// @param receiver Beneficiario de royalties.
-    /// @param feeNumerator Fee en basis points (máx. 9999 con denominador 10000).
+    /// @param feeNumerator Fee en basis points (máx. 10000 con denominador 10000).
     function setDefaultRoyalty(address receiver, uint96 feeNumerator) external;
+
+    /// @notice Configura royalty para un `tokenId` específico (sobreescribe el default).
+    /// @param tokenId NFT existente.
+    /// @param receiver Beneficiario de royalties del token.
+    /// @param feeNumerator Fee en basis points.
+    function setTokenRoyalty(uint256 tokenId, address receiver, uint96 feeNumerator) external;
+
+    /// @notice Elimina la royalty por defecto (tokens sin override quedan sin royalty).
+    function deleteDefaultRoyalty() external;
+
+    /// @notice Restablece royalty de un token al default global.
+    /// @param tokenId NFT existente.
+    function resetTokenRoyalty(uint256 tokenId) external;
 }

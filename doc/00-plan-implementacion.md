@@ -2,7 +2,7 @@
 
 Documento maestro del módulo. Define fases, entregables, criterios de aceptación y el **protocolo de autorización** usado durante el desarrollo.
 
-> **Estado actual:** Fases **0–5** ✅ (2026-08-28). Fases **6–7** 🔒 pendientes de autorización.
+> **Estado actual:** Fases **0–6** ✅ (2026-08-29). Fase **7** 🔒 pendiente de autorización.
 
 ---
 
@@ -154,7 +154,7 @@ royalty feeNumerator <= feeDenominator (típicamente 10000)
 | 3 | ERC-2981 royalties + Ownable2Step admin | ✅ Aprobada (2026-08-28) |
 | 4 | Fuzz + safe-receiver / ataques + gas report | ✅ Aprobada (2026-08-28) |
 | 5 | Scripts deploy + ABI | ✅ Aprobada (2026-08-28) |
-| 6 | Frontend demo (opcional) | 🔒 Pendiente |
+| 6 | Frontend demo (opcional) | ✅ Aprobada (2026-08-29) |
 | 7 | Docs finales, handoff, alineación diagramas | 🔒 Pendiente |
 
 ---
@@ -416,9 +416,9 @@ Deploy reproducible en Anvil/testnet y export de ABI para UI.
 
 ### Fase 6 — Frontend demo (opcional)
 
-**Estado:** 🔒 Pendiente  
+**Estado:** ✅ Aprobada — 2026-08-29  
 **Duración estimada:** 2–3 días  
-**Depende de:** Fase 5
+**Depende de:** Fase 5 ✅
 
 #### Objetivo
 
@@ -434,16 +434,24 @@ Demo Next.js: conectar wallet, mint (owner), ver `tokenURI`, transfer, mostrar r
 
 #### Criterios de aceptación
 
-- [ ] Flujo feliz documentado.
-- [ ] `next build` OK.
-- [ ] Tests UI mínimos verdes.
+- [x] Flujo feliz documentado.
+- [x] `next build` OK.
+- [x] Tests UI mínimos verdes.
+
+#### Resultado
+
+- `frontend/` — Next.js 15 App Router + ethers v6 + Zod + Vitest.
+- `NftCollectionApp` + hooks `useWallet` / `useNftCollection`.
+- Flujos: mint / safeMint / mintBatch, transfer, lookup tokenURI+royalty, setBaseURI.
+- `doc/FRONTEND.md` — setup Anvil + flujo feliz.
+- `npm test` → **7 passed**; `npm run build` → OK (Node ≥ 20).
 
 #### Aprobación
 
-- [ ] Autorizada para ejecutar (o **omitida**)  
-- [ ] Completada / omitida → ✅ fecha
+- [x] Autorizada para ejecutar  
+- [x] Completada y revisada → ✅ 2026-08-29
 
-> **No iniciar sin:** `Autorizo Fase 6` o `Omitir Fase 6`
+> Responde cuando quieras iniciar la **Fase 7**: `Autorizo Fase 7`
 
 ---
 
@@ -487,7 +495,7 @@ Alinear diagramas con código final; README usable por un tercero.
 [x] Fase 3  ERC-2981 + Ownable2Step    → ✅ 2026-08-28
 [x] Fase 4  Fuzz / safe / gas / SWC    → ✅ 2026-08-28
 [x] Fase 5  Deploy + ABI               → ✅ 2026-08-28
-[ ] Fase 6  Frontend (opcional)        → 🔒
+[x] Fase 6  Frontend (opcional)        → ✅ 2026-08-29
 [ ] Fase 7  Docs finales               → 🔒
 ```
 
@@ -523,5 +531,5 @@ Alinear diagramas con código final; README usable por un tercero.
 
 ## 10. Próximo paso inmediato
 
-**Fase 5 cerrada.** Deploy y ABIs listos.  
-Para demo UI: **`Autorizo Fase 6`** o **`Omitir Fase 6`** para ir a Fase 7.
+**Fase 6 cerrada.** Demo Next.js operativa.  
+Para docs finales y handoff: responde **`Autorizo Fase 7`**.

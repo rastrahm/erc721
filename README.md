@@ -1,8 +1,8 @@
 # 04 — ERC-721 NFT Collection & Royalty
 
-Colección NFT **ERC-721** gas-optimizada con mint por lotes, base URI dinámica y royalties **ERC-2981**. Solidity `0.8.24` + Foundry.
+Colección NFT **ERC-721** gas-optimizada con mint por lotes, base URI dinámica y royalties **ERC-2981**. Solidity `0.8.24` + Foundry + demo Next.js.
 
-**Estado:** Fases **0–5** ✅. Fases 6–7 🔒 pendientes.
+**Estado:** Fases **0–6** ✅ · Fase **7** 🔒 pendiente.
 
 ---
 
@@ -13,7 +13,7 @@ Colección NFT **ERC-721** gas-optimizada con mint por lotes, base URI dinámica
 | Contratos | Solidity `0.8.24`, OpenZeppelin v5 (`ERC721`, `ERC2981`, `Ownable2Step`) |
 | Tooling | Foundry (`forge` / `cast` / `anvil`) |
 | Estándares | ERC-721, ERC-165, ERC-2981 |
-| UI demo | Next.js (Fase 6, opcional) |
+| UI demo | Next.js 15, ethers v6, Zod, Vitest |
 
 ---
 
@@ -29,6 +29,7 @@ Colección NFT **ERC-721** gas-optimizada con mint por lotes, base URI dinámica
 | [`doc/ATAQUES.md`](doc/ATAQUES.md) | Campañas de ataque + tests |
 | [`doc/GAS.md`](doc/GAS.md) | Gas report baseline |
 | [`doc/DEPLOY.md`](doc/DEPLOY.md) | Deploy Anvil / testnet + ABI |
+| [`doc/FRONTEND.md`](doc/FRONTEND.md) | Demo UI Next.js |
 
 ---
 
@@ -48,22 +49,28 @@ forge script script/Deploy.s.sol:Deploy \
   --broadcast
 
 ./script/export-abi.sh
+
+cd frontend && cp .env.example .env.local && npm install && npm run dev
+# Node ≥ 20 (recomendado 22 via nvm)
 ```
+
+Playbooks: [`doc/DEPLOY.md`](doc/DEPLOY.md) · [`doc/FRONTEND.md`](doc/FRONTEND.md).
 
 ---
 
 ## Estructura
 
 ```text
-src/           # NFTCollection + interfaces + mocks (Fases 1+)
+src/           # NFTCollection + interfaces + mocks
 test/          # unit / fuzz / invariant / attack
-script/        # Deploy + export-abi (Fase 5)
+script/        # Deploy + export-abi
 lib/           # forge-std + openzeppelin-contracts
-doc/           # Plan, diagramas, SWC, ataques, gas
+doc/           # Plan, diagramas, SWC, ataques, gas, frontend
+frontend/      # Demo Next.js (ABIs en frontend/abi/)
 ```
 
 ---
 
 ## Próximo paso
 
-Autorizar **Fase 6** (frontend demo) o **omitir** para Fase 7: `Autorizo Fase 6` / `Omitir Fase 6`
+Autorizar **Fase 7** (docs finales / handoff): `Autorizo Fase 7`

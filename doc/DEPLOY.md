@@ -70,13 +70,21 @@ Genera (en `doc/abi/` y `frontend/abi/`):
 - `NFTCollection.json`
 - `INFTCollection.json`
 
-## 3. Frontend env (Fase 6, opcional)
+## 3. Frontend env (Fase 6)
+
+Ver playbook completo: [`FRONTEND.md`](./FRONTEND.md).
 
 ```bash
-# Tras export-abi.sh
+cd frontend
+cp .env.example .env.local
+# Rellena NEXT_PUBLIC_COLLECTION_ADDRESS del log de Deploy
+
 NEXT_PUBLIC_RPC_URL=http://127.0.0.1:8545
 NEXT_PUBLIC_CHAIN_ID=31337
-NEXT_PUBLIC_COLLECTION_ADDRESS=0x...   # del log Deploy
+NEXT_PUBLIC_COLLECTION_ADDRESS=0x...
+
+# Requiere Node ≥ 20 (nvm use 22)
+npm install && npm run dev
 ```
 
 ## 4. Testnet (opcional)

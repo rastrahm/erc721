@@ -24,6 +24,9 @@ Abre http://localhost:3000. En MetaMask:
 - Red: Localhost 8545, chainId **31337**
 - Importa la private key Anvil #0 (solo demo local) — es el **owner** del deploy por defecto
 
+**Manual de ayuda:** botón **? Ayuda** en la UI → http://localhost:3000/ayuda  
+Documento completo: [`MANUAL-FRONTEND.md`](./MANUAL-FRONTEND.md).
+
 ## Flujo feliz
 
 1. **Conectar wallet** → cuenta Anvil #0 en chain 31337 (badge **Owner**).

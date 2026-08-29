@@ -101,4 +101,11 @@ describe("NftCollectionApp", () => {
     const toggle = screen.getByTestId("theme-toggle");
     expect(toggle).toHaveAttribute("aria-label", "Cambiar a modo claro");
   });
+
+  it("expone enlace al manual de ayuda", () => {
+    render(<NftCollectionApp />);
+    const help = screen.getByTestId("help-link");
+    expect(help).toHaveAttribute("href", "/ayuda");
+    expect(help).toHaveAccessibleName("Abrir manual de ayuda");
+  });
 });

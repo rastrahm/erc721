@@ -5,7 +5,7 @@ import { safeParsePublicEnv, type PublicEnv } from "@/lib/env";
 import { useWallet } from "@/hooks/useWallet";
 import { useNftCollection } from "@/hooks/useNftCollection";
 import { formatEth, shortAddress } from "@/lib/format";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { AppToolbar } from "@/components/AppToolbar";
 
 /**
  * Demo UI: conectar wallet, mint (owner), transfer, consultar tokenURI y royalty.
@@ -29,14 +29,13 @@ export function NftCollectionApp() {
   if (!envResult.success || !env) {
     return (
       <div className="app-grid">
-        <div className="hero-top">
-          <ThemeToggle />
-        </div>
+        <AppToolbar />
         <section className="panel" role="alert">
           <h2 className="panel-title">Falta configuración</h2>
           <p className="muted">
             Copia <code>.env.example</code> → <code>.env.local</code> con la
-            address del deploy Anvil (ver <code>doc/DEPLOY.md</code>).
+            address del deploy Anvil (ver <code>doc/DEPLOY.md</code>). Manual
+            in-app: <a href="/ayuda">/ayuda</a>.
           </p>
           <pre className="error-box">
             {envResult.success ? "Env incompleto" : envResult.error.message}
@@ -52,9 +51,7 @@ export function NftCollectionApp() {
   return (
     <div className="app-grid">
       <header className="hero">
-        <div className="hero-top">
-          <ThemeToggle />
-        </div>
+        <AppToolbar />
         <p className="brand">NFTCollection</p>
         <h1 className="headline">ERC-721 · ERC-2981</h1>
         <p className="lede">

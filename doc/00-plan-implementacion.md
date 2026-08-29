@@ -34,7 +34,8 @@ Construir una **colección NFT ERC-721 gas-optimizada** que:
 - Use **Ownable2Step** para admin (URI, royalties, supply caps).
 - Enforce **safe mint/transfer** vía `onERC721Received` cuando el destino es contrato.
 - Aplique **custom errors**, NatSpec y optimizaciones (`unchecked` solo con bounds previos).
-- Incluya suite Foundry: unit + fuzz + tests de interfaces y safe-receiver.
+- Incluya suite Foundry: unit + fuzz + invariant + attack + tests de interfaces y safe-receiver.
+- Incluya demo Next.js (Fase 6 ✅): wallet, mint, transfer, URI, royalty, tema claro/oscuro.
 
 ---
 
@@ -43,11 +44,11 @@ Construir una **colección NFT ERC-721 gas-optimizada** que:
 | Capa | Tecnología | Notas |
 |------|------------|--------|
 | Contratos | Solidity `0.8.24` (pragma fijo) | Sin floating pragma |
-| Tooling | Foundry (`forge`, `cast`, `anvil`) | Unit, fuzz, gas report |
-| Librerías | OpenZeppelin **v5.x** | `ERC721`, `ERC2981`, `Ownable2Step`, ERC-165 |
+| Tooling | Foundry (`forge`, `cast`, `anvil`) | Unit, fuzz, invariant, gas report |
+| Librerías | OpenZeppelin **v5.0.2** | `ERC721`, `ERC2981`, `Ownable2Step`, ERC-165 |
 | Estándares | ERC-721, ERC-165, ERC-2981 | Interface IDs verificados en tests |
-| Frontend | Next.js App Router + TS + ethers v6 + Zod | Opcional (Fase 6) |
-| Tests UI | Vitest + RTL | Solo si Fase 6 autorizada |
+| Frontend | Next.js 15 App Router + TS + ethers v6 + Zod | Fase 6 ✅ |
+| Tests UI | Vitest + RTL | Fase 6 ✅ (`frontend/`, Node ≥ 20) |
 
 **Fuera de alcance en v1 (salvo autorización explícita):** ERC-4906 metadata events avanzados, lazy mint / signature mint, allowlist Merkle, reveal mechanism, marketplace propio, mainnet production hardening.
 
@@ -59,56 +60,75 @@ Construir una **colección NFT ERC-721 gas-optimizada** que:
 Usuario / Owner (MetaMask / cast)
         │
         ▼
-[Opcional] Next.js + ethers v6  ──RPC──►  Anvil / Testnet
-        │                                      │
-        └──────── ABI + address ───────────────┤
-                                               ▼
-                                    NFTCollection (core)
-                          ┌────────────┼────────────────┐
-                          ▼            ▼                ▼
-                     ERC-721      Base URI /        ERC-2981
-                     mint/batch   tokenURI          royaltyInfo
-                     transfer     Ownable2Step      default + per-token
-                          │
-                          ▼
-                   IERC721Receiver (safe paths)
+Next.js demo + ethers v6  ──RPC──►  Anvil / Testnet
+        │                                │
+        └──────── ABI + address ─────────┤
+                                         ▼
+                              NFTCollection (core)
+                    ┌────────────┼────────────────┐
+                    ▼            ▼                ▼
+               ERC-721      Base URI /        ERC-2981
+               mint/batch   tokenURI          royaltyInfo
+               transfer     Ownable2Step      default + per-token
+                    │
+                    ▼
+             IERC721Receiver (safe paths)
 ```
 
-Diagramas:
+Documentación relacionada:
 
 - [Diagrama de clases](./01-diagrama-clases.md)
 - [Diagrama de flujo](./02-diagrama-flujo.md)
 - [Flujograma](./03-flujograma.md)
+- [SWC-AUDIT](./SWC-AUDIT.md) · [ATAQUES](./ATAQUES.md) · [GAS](./GAS.md)
+- [DEPLOY](./DEPLOY.md) · [FRONTEND](./FRONTEND.md)
 
 ---
 
-## 4. Estructura de repositorio (prevista)
+## 4. Estructura de repositorio (actual)
 
 ```
 04-erc721/
 ├── .cursorrules
 ├── README.md
-├── doc/                              # Plan, diagramas, handoff
 ├── foundry.toml
 ├── remappings.txt
+├── .env.example
+├── doc/
+│   ├── 00-plan-implementacion.md
+│   ├── 01-diagrama-clases.md
+│   ├── 02-diagrama-flujo.md
+│   ├── 03-flujograma.md
+│   ├── SWC-AUDIT.md
+│   ├── ATAQUES.md
+│   ├── GAS.md
+│   ├── DEPLOY.md
+│   ├── FRONTEND.md
+│   └── abi/                          # NFTCollection + INFTCollection
 ├── src/
 │   ├── interfaces/INFTCollection.sol
 │   ├── NFTCollection.sol
-│   └── mocks/MockERC721Receiver.sol  # receiver OK / bad para tests
+│   └── mocks/
+│       ├── MockERC721Receiver.sol
+│       ├── MockERC721NonReceiver.sol
+│       └── MockERC721ReceiverReentrant.sol
 ├── script/
 │   ├── Deploy.s.sol
 │   └── export-abi.sh
 ├── test/
 │   ├── NFTCollection.t.sol
-│   ├── unit/
+│   ├── unit/                         # core, lifecycle, royalty
 │   ├── fuzz/
-│   └── attack/                       # non-receiver / reentrancy hooks
-└── frontend/                         # Fase 6 opcional
+│   ├── invariant/
+│   └── attack/
+└── frontend/                         # Next.js demo (Fase 6)
+    ├── abi/
+    └── src/                          # app, components, hooks, lib
 ```
 
 ---
 
-## 5. Superficie on-chain prevista (v1)
+## 5. Superficie on-chain (v1 implementada)
 
 | Función / pieza | Rol |
 |-----------------|-----|
@@ -117,9 +137,10 @@ Diagramas:
 | `setBaseURI(uri)` | Owner actualiza raíz de metadata |
 | `tokenURI(tokenId)` | `baseURI + tokenId` (o convención acordada) |
 | `setDefaultRoyalty(receiver, feeNumerator)` | ERC-2981 default |
-| `setTokenRoyalty(tokenId, receiver, feeNumerator)` | Royalty por token (opcional v1) |
+| `setTokenRoyalty` / `resetTokenRoyalty` | Royalty por token + reset al default |
+| `deleteDefaultRoyalty()` | Limpia royalty global |
 | `royaltyInfo(tokenId, salePrice)` | View estándar ERC-2981 |
-| `supportsInterface(interfaceId)` | ERC-165 + 721 + 2981 |
+| `supportsInterface(interfaceId)` | ERC-165 + 721 + Metadata + 2981 |
 | Transfers / approvals | Superficie ERC-721 estándar OZ |
 
 ### Errores custom (v1)
@@ -129,7 +150,8 @@ Diagramas:
 - `MintZeroQuantity()`
 - `Unauthorized()`
 - `ZeroAddress()`
-- `InvalidRoyalty()` — fee fuera de rango / receiver cero (si aplica)
+- `InvalidRoyalty()` — reservado; validación fee/receiver también vía OZ ERC-2981
+- `NotImplemented()` — usado solo en esqueleto Fase 1 (ya no aplica a mutators vivos)
 
 ### Invariantes clave
 
@@ -422,7 +444,7 @@ Deploy reproducible en Anvil/testnet y export de ABI para UI.
 
 #### Objetivo
 
-Demo Next.js: conectar wallet, mint (owner), ver `tokenURI`, transfer, mostrar royalty info.
+Demo Next.js: conectar wallet, mint (owner), ver `tokenURI`, transfer, mostrar royalty info, tema claro/oscuro.
 
 #### Tareas
 
@@ -431,20 +453,25 @@ Demo Next.js: conectar wallet, mint (owner), ver `tokenURI`, transfer, mostrar r
 3. Flujos: mint, batch mint, transfer, setBaseURI (owner).
 4. Vitest + RTL (TDD interacción).
 5. `.env.example` con `NEXT_PUBLIC_*`.
+6. Toggle tema claro/oscuro con persistencia (`localStorage`).
 
 #### Criterios de aceptación
 
 - [x] Flujo feliz documentado.
 - [x] `next build` OK.
 - [x] Tests UI mínimos verdes.
+- [x] Demo verificada en Anvil (lectura on-chain + UI).
+- [x] Tema claro/oscuro operativo.
 
 #### Resultado
 
 - `frontend/` — Next.js 15 App Router + ethers v6 + Zod + Vitest.
-- `NftCollectionApp` + hooks `useWallet` / `useNftCollection`.
+- `NftCollectionApp` + hooks `useWallet` / `useNftCollection` / `useTheme`.
+- `ThemeToggle` — `data-theme` + CSS variables; preferencia en `localStorage` (`nft-theme`); script anti-flash en `layout.tsx`.
 - Flujos: mint / safeMint / mintBatch, transfer, lookup tokenURI+royalty, setBaseURI.
 - `doc/FRONTEND.md` — setup Anvil + flujo feliz.
-- `npm test` → **7 passed**; `npm run build` → OK (Node ≥ 20).
+- `npm test` → **8 passed**; `npm run build` → OK (Node ≥ 20; recomendado `nvm use 22`).
+- Verificado en vivo: Anvil + deploy + `http://localhost:3000` (supply, royalty, toggle tema).
 
 #### Aprobación
 
@@ -457,25 +484,26 @@ Demo Next.js: conectar wallet, mint (owner), ver `tokenURI`, transfer, mostrar r
 
 ### Fase 7 — Docs finales y handoff
 
-**Estado:** 🔒 Pendiente  
+**Estado:** 🔒 Pendiente de autorización  
 **Duración estimada:** 0.5–1 día  
-**Depende de:** Fase 5 (y Fase 6 si no se omitió)
+**Depende de:** Fase 5 ✅ + Fase 6 ✅
 
 #### Objetivo
 
-Alinear diagramas con código final; README usable por un tercero.
+Alinear diagramas con código final; README usable por un tercero; cerrar DoD global.
 
 #### Tareas
 
-1. README del módulo.
-2. Actualizar diagramas si hubo desviaciones.
-3. HANDOFF / limitaciones / mejoras (si se autorizan).
-4. Checklist Definition of Done global.
+1. Revisar README del módulo (ya actualizado en Fase 6; alinear si falta).
+2. Actualizar diagramas (`01`–`03`) si hubo desviaciones vs código final.
+3. HANDOFF / limitaciones / mejoras (si se autorizan esos archivos).
+4. Marcar Definition of Done global (§8).
+5. Mencionar tema claro/oscuro y Node ≥ 20 en handoff/frontend si aplica.
 
 #### Criterios de aceptación
 
 - [ ] `doc/` coherente con implementación.
-- [ ] Tercero puede testear/deploy siguiendo docs.
+- [ ] Tercero puede testear/deploy/UI siguiendo docs.
 
 #### Aprobación
 
@@ -503,16 +531,16 @@ Alinear diagramas con código final; README usable por un tercero.
 
 ## 8. Definition of Done (global)
 
-1. [ ] `pragma solidity 0.8.24` fijo.
-2. [ ] ERC-721 + ERC-165 + ERC-2981 con `supportsInterface` verificado.
-3. [ ] Mint individual y batch con guards `MaxSupplyExceeded` / `MintZeroQuantity`.
-4. [ ] Base URI dinámica y `tokenURI` correcto.
-5. [ ] Safe mint/transfer con chequeo `onERC721Received`.
-6. [ ] Ownable2Step en funciones admin.
-7. [ ] Solo custom errors; NatSpec en públicas/externas.
-8. [ ] Suite: unit + fuzz (+ ataque non-receiver).
-9. [ ] Diagramas y plan actualizados al cerrar.
-10. [ ] Frontend solo si Fase 6 autorizada.
+1. [x] `pragma solidity 0.8.24` fijo.
+2. [x] ERC-721 + ERC-165 + ERC-2981 con `supportsInterface` verificado.
+3. [x] Mint individual y batch con guards `MaxSupplyExceeded` / `MintZeroQuantity`.
+4. [x] Base URI dinámica y `tokenURI` correcto.
+5. [x] Safe mint/transfer con chequeo `onERC721Received`.
+6. [x] Ownable2Step en funciones admin.
+7. [x] Solo custom errors; NatSpec en públicas/externas.
+8. [x] Suite: unit + fuzz + invariant + ataque non-receiver / reentrancy (`forge test` → 58).
+9. [ ] Diagramas y plan alineados al cierre (Fase 7).
+10. [x] Frontend autorizado e implementado (Fase 6: mint/transfer/URI/royalty + tema claro/oscuro).
 
 ---
 
@@ -522,14 +550,16 @@ Alinear diagramas con código final; README usable por un tercero.
 |--------|------------|
 | Tokens locked en contratos sin receiver | `safeMint` / `safeTransferFrom` + tests non-receiver |
 | Overflow de supply en batch | Check `totalSupply + quantity <= maxSupply` antes del loop |
-| Royalty fee inválido | Validar fee ≤ denominator; custom `InvalidRoyalty` |
-| URI malformada / vacío | Tests `tokenURI`; política documentada (revert vs string vacío) |
+| Royalty fee inválido | Validación OZ ERC-2981 + tests admin |
+| URI malformada / vacío | Tests `tokenURI`; política `baseURI + id` documentada |
 | Herencia OZ v5 / overrides | Seguir overrides OZ; tests de interface IDs |
+| Node frontend demasiado viejo | `engines.node >= 20`; documentar `nvm use 22` |
 | Avance sin review | **Protocolo de autorización por fase** |
 
 ---
 
 ## 10. Próximo paso inmediato
 
-**Fase 6 cerrada.** Demo Next.js operativa.  
-Para docs finales y handoff: responde **`Autorizo Fase 7`**.
+**Estado:** Fases **0–6** cerradas (contratos + tests + deploy + demo UI con tema).  
+
+Para docs finales, handoff y cierre DoD §9: responde **`Autorizo Fase 7`**.

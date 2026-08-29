@@ -1,8 +1,8 @@
 # Flujograma — ERC-721 NFT Collection & Royalty
 
-Diagramas de decisión (sí/no) del diseño v1. Secuencias: [`02-diagrama-flujo.md`](./02-diagrama-flujo.md). Plan: [`00-plan-implementacion.md`](./00-plan-implementacion.md).
+Diagramas de decisión **as-built** (Fase 7). Secuencias: [`02-diagrama-flujo.md`](./02-diagrama-flujo.md). Plan: [`00-plan-implementacion.md`](./00-plan-implementacion.md).
 
-Orden típico en mutators de mint: `onlyOwner` → checks de dirección/quantity/supply → effects → (safe) interactions con receiver.
+Orden en mint: `onlyOwner` → `_reserveMint` (checks + reserva ids) → effects `_mint`/`_safeMint` → (safe) interaction receiver.
 
 ---
 
@@ -48,9 +48,9 @@ flowchart TD
     F -->|Sí| H{totalSupply + quantity <= maxSupply?}
     H -->|No| I[Revert MaxSupplyExceeded]
     I --> Z
-    H -->|Sí| J[fromId = _nextTokenId]
-    J --> K[Loop unchecked i = 0 .. quantity)
-    K --> L[Mint token fromId + i]
+    H -->|Sí| J[fromId = _nextTokenId; reservar quantity]
+    J --> K[Loop unchecked tokenId = fromId .. end)
+    K --> L[_mint o _safeMint tokenId]
     L --> M{Variante safe y to es contrato?}
     M -->|Sí| N[onERC721Received por token]
     N --> O{OK?}
@@ -63,20 +63,22 @@ flowchart TD
     R --> S([Fin OK])
 ```
 
+> Nota: `_reserveMint` actualiza `_nextTokenId` y `_totalMinted` **antes** del loop de mint.
+
 ---
 
 ## 3. Flujograma: `tokenURI(tokenId)`
 
 ```mermaid
 flowchart TD
-    A([Inicio tokenURI]) --> B{token existe?}
-    B -->|No| C[Revert TokenDoesNotExist]
+    A([Inicio tokenURI]) --> B{token existe? _requireOwned}
+    B -->|No| C[Revert OZ / TokenDoesNotExist]
     C --> Z([Fin error])
     B -->|Sí| D[Leer _baseTokenURI]
-    D --> E{baseURI vacío?}
-    E -->|Sí| F[Política Fase 1: string vacío o revert]
-    E -->|No| G["return concat(baseURI, tokenId)"]
-    F --> H([Fin])
+    D --> E{bytes base length > 0?}
+    E -->|No| F["return \"\" (política OZ)"]
+    E -->|Sí| G["return concat(baseURI, tokenId)"]
+    F --> H([Fin OK])
     G --> H
 ```
 

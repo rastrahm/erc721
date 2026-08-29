@@ -1,6 +1,6 @@
 # Diagrama de clases — ERC-721 NFT Collection & Royalty
 
-Vista estática del diseño previsto (v1) según `.cursorrules` del módulo 04. Se actualizará al cerrar implementación (Fase 7).
+Vista **as-built** (Fase 7) alineada a `src/NFTCollection.sol` + `INFTCollection.sol` + demo `frontend/`.
 
 ---
 
@@ -12,39 +12,48 @@ classDiagram
 
     class INFTCollection {
         <<interface>>
-        +name() string
-        +symbol() string
         +maxSupply() uint256
         +totalSupply() uint256
         +baseURI() string
         +tokenURI(tokenId) string
         +mint(to) uint256
         +safeMint(to) uint256
-        +mintBatch(to, quantity)
-        +safeMintBatch(to, quantity)
+        +mintBatch(to, quantity) uint256
+        +safeMintBatch(to, quantity) uint256
         +setBaseURI(uri)
         +setDefaultRoyalty(receiver, feeNumerator)
-        +royaltyInfo(tokenId, salePrice) address, uint256
-        +supportsInterface(interfaceId) bool
+        +setTokenRoyalty(tokenId, receiver, feeNumerator)
+        +deleteDefaultRoyalty()
+        +resetTokenRoyalty(tokenId)
     }
 
     class NFTCollection {
-        -string _baseTokenURI
-        -uint256 _maxSupply
+        +string MODULE_ID
+        -uint256 MAX_SUPPLY$
+        -uint256 _totalMinted
         -uint256 _nextTokenId
+        -string _baseTokenURI
         +constructor(name, symbol, maxSupply, baseURI, royaltyReceiver, feeNumerator, owner)
+        +maxSupply() uint256
+        +totalSupply() uint256
+        +baseURI() string
+        +tokenURI(tokenId) string
         +mint(to) uint256
         +safeMint(to) uint256
-        +mintBatch(to, quantity)
-        +safeMintBatch(to, quantity)
+        +mintBatch(to, quantity) uint256
+        +safeMintBatch(to, quantity) uint256
         +setBaseURI(uri)
         +setDefaultRoyalty(receiver, feeNumerator)
-        -_mintGuard(to, quantity)*
+        +setTokenRoyalty(tokenId, receiver, feeNumerator)
+        +deleteDefaultRoyalty()
+        +resetTokenRoyalty(tokenId)
+        +supportsInterface(interfaceId) bool
+        -_reserveMint(to, quantity)* uint256
         -_baseURI() string
     }
 
     class ERC721 {
-        <<OpenZeppelin>>
+        <<OpenZeppelin v5>>
         +balanceOf(owner)
         +ownerOf(tokenId)
         +transferFrom(from, to, tokenId)
@@ -53,15 +62,18 @@ classDiagram
         +setApprovalForAll(operator, approved)
         +getApproved(tokenId)
         +isApprovedForAll(owner, operator)
+        +name() string
+        +symbol() string
     }
 
     class ERC2981 {
-        <<OpenZeppelin>>
+        <<OpenZeppelin v5>>
         +royaltyInfo(tokenId, salePrice)
         +supportsInterface(interfaceId)
         #_setDefaultRoyalty(receiver, feeNumerator)
         #_setTokenRoyalty(tokenId, receiver, feeNumerator)
         #_deleteDefaultRoyalty()
+        #_resetTokenRoyalty(tokenId)
     }
 
     class ERC165 {
@@ -88,14 +100,25 @@ classDiagram
         +onERC721Received(...) bytes4
     }
 
+    class MockERC721NonReceiver {
+        <<test>>
+        note: sin onERC721Received
+    }
+
+    class MockERC721ReceiverReentrant {
+        <<test>>
+        +onERC721Received(...) bytes4
+    }
+
     class NFTErrors {
-        <<errors>>
+        <<errors INFTCollection>>
         TokenDoesNotExist()
         MaxSupplyExceeded()
         MintZeroQuantity()
         Unauthorized()
         ZeroAddress()
         InvalidRoyalty()
+        NotImplemented()
     }
 
     class NFTEvents {
@@ -106,16 +129,18 @@ classDiagram
         BatchMinted(to, fromTokenId, quantity)
         BaseURIUpdated(newBaseURI)
         RoyaltyUpdated(receiver, feeNumerator)
+        TokenRoyaltyUpdated(tokenId, receiver, feeNumerator)
     }
 
     class NFTClient {
         <<frontend Next.js + ethers v6>>
         +connectWallet()
-        +mint()
-        +mintBatch()
+        +mint / safeMint / mintBatch()
         +transfer()
-        +tokenURI()
-        +royaltyInfo()
+        +tokenURI + royaltyInfo()
+        +setBaseURI()
+        +themeToggle()
+        +helpManual /ayuda
     }
 
     INFTCollection <|.. NFTCollection
@@ -128,6 +153,7 @@ classDiagram
     NFTCollection ..> NFTEvents
     NFTCollection ..> IERC721Receiver : safe mint/transfer
     MockERC721Receiver ..|> IERC721Receiver
+    MockERC721ReceiverReentrant ..|> IERC721Receiver
     NFTClient ..> INFTCollection
 ```
 
@@ -137,27 +163,28 @@ classDiagram
 
 | Tipo | Responsabilidad |
 |------|-----------------|
-| `INFTCollection` | Superficie pública estable para tests, scripts y UI |
+| `INFTCollection` | Superficie pública estable (tests, scripts, UI) |
 | `NFTCollection` | Mint/batch, URI, royalties, supply cap, admin |
-| OZ `ERC721` | Ownership, transfers, approvals, safe receiver checks |
-| OZ `ERC2981` | `royaltyInfo` y storage de fee/receiver |
+| OZ `ERC721` | Ownership, transfers, approvals, safe receiver |
+| OZ `ERC2981` | `royaltyInfo` + storage default/per-token |
 | OZ `Ownable2Step` | Admin URI / royalty / ownership 2-step |
-| `IERC721Receiver` | Hook obligatorio en destinos contrato (safe paths) |
-| `MockERC721Receiver` | Tests de aceptación / rechazo del hook |
-| `NFTClient` | Demo Fase 6 (`frontend/`) |
+| `IERC721Receiver` | Hook en destinos contrato (safe paths) |
+| Mocks | Aceptación, rechazo y reentrancy en tests |
+| `NFTClient` | Demo Fase 6–7 (`frontend/`, tema + ayuda) |
 
 ---
 
-## 3. Estado crítico (modelo v1)
+## 3. Estado crítico (as-built)
 
 ```text
-Global:
-  name / symbol          // ERC-721 metadata
-  _maxSupply             // techo de mint
-  _nextTokenId           // siguiente id a mintear (secuencial)
-  _baseTokenURI          // raíz dinámica de metadata
+Global (NFTCollection):
+  MODULE_ID               // constante "04-erc721"
+  MAX_SUPPLY              // immutable
+  _totalMinted            // totalSupply()
+  _nextTokenId            // siguiente id (inicia en 0)
+  _baseTokenURI           // raíz dinámica
 
-Por token (heredado OZ ERC721):
+Por token (OZ ERC721):
   _owners[tokenId]
   _tokenApprovals[tokenId]
 
@@ -165,26 +192,27 @@ Por owner/operator:
   _balances[owner]
   _operatorApprovals[owner][operator]
 
-Royalties (heredado OZ ERC2981):
+Royalties (OZ ERC2981):
   default royalty receiver + feeNumerator
-  (opcional) royalty por tokenId
+  royalty por tokenId (opcional)
 ```
 
-### Política de `tokenURI` (propuesta)
+### Política de `tokenURI` (congelada)
 
 ```text
-tokenURI(tokenId) =
-  existe(tokenId) ? string.concat(_baseTokenURI, tokenId.toString()) : revert TokenDoesNotExist()
+_requireOwned(tokenId)   // si no existe → error OZ / TokenDoesNotExist vía tests
+base = _baseTokenURI
+bytes(base).length > 0 ? concat(base, tokenId.toString()) : ""
 ```
 
-Convención exacta (con/sin `/`, extensión `.json`) se congela en Fase 1.
+Convención off-chain: terminar `baseURI` en `/` si el host lo requiere.
 
 ---
 
-## 4. Interface IDs a verificar
+## 4. Interface IDs verificados
 
-| Estándar | Interface ID (referencia) |
-|----------|---------------------------|
+| Estándar | Interface ID |
+|----------|----------------|
 | ERC-165 | `0x01ffc9a7` |
 | ERC-721 | `0x80ac58cd` |
 | ERC-721 Metadata | `0x5b5e139f` |
@@ -192,27 +220,25 @@ Convención exacta (con/sin `/`, extensión `.json`) se congela en Fase 1.
 
 ---
 
-## 5. Layout Solidity (previsto)
+## 5. Layout Solidity (implementado)
 
 1. SPDX + `pragma solidity 0.8.24;`
-2. Imports OZ + interfaz
-3. Custom errors / events (o en interfaz)
-4. Estado (`_maxSupply`, `_nextTokenId`, `_baseTokenURI`)
+2. Imports OZ + `INFTCollection`
+3. Contrato: herencia `INFTCollection, ERC721, ERC2981, Ownable2Step`
+4. Estado (`MAX_SUPPLY`, `_totalMinted`, `_nextTokenId`, `_baseTokenURI`)
 5. Constructor
-6. Views (`totalSupply`, `tokenURI`, `royaltyInfo`, `supportsInterface`)
-7. Mint mutators → admin (`setBaseURI`, royalties) → overrides internos
+6. Views → mint mutators → admin URI/royalty → `_reserveMint` / `_baseURI` / `supportsInterface`
 
 ---
 
-## 6. Decisiones de diseño (v1 propuestas)
+## 6. Decisiones de diseño (v1 cerradas)
 
 | Tema | Decisión |
 |------|----------|
-| Base de implementación | OpenZeppelin ERC721 + ERC2981 (no from-scratch) |
-| Numeración `tokenId` | Secuencial desde **0** (`_nextTokenId` inicia en 0) |
-| Mint público vs onlyOwner | **onlyOwner** en v1 (colección curada); mint abierto = fase extra |
-| `mint` vs `safeMint` | Ambos; batch con variante safe |
-| Royalty por token | Default obligatorio; per-token opcional en Fase 3 |
-| `Pausable` | No en v1 |
-| Enumerable / URIStorage OZ | No por defecto (gas); solo si se autoriza |
-| Reveal / allowlist | Fuera de alcance v1 |
+| Base | OpenZeppelin ERC721 + ERC2981 |
+| `tokenId` | Secuencial desde **0** |
+| Mint | **onlyOwner** |
+| `mint` / `safeMint` | Ambos + variantes batch |
+| Royalty per-token | Sí (`set` / `reset`) + default |
+| Pausable / Enumerable / URIStorage | No |
+| Reveal / allowlist | Fuera de alcance |

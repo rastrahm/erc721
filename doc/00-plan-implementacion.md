@@ -2,7 +2,7 @@
 
 Documento maestro del módulo. Define fases, entregables, criterios de aceptación y el **protocolo de autorización** usado durante el desarrollo.
 
-> **Estado actual:** Fases **0–6** ✅ (2026-08-29). Fase **7** 🔒 pendiente de autorización.
+> **Estado actual:** Fases **0–7** ✅ (módulo cerrado, 2026-08-29).
 
 ---
 
@@ -35,7 +35,8 @@ Construir una **colección NFT ERC-721 gas-optimizada** que:
 - Enforce **safe mint/transfer** vía `onERC721Received` cuando el destino es contrato.
 - Aplique **custom errors**, NatSpec y optimizaciones (`unchecked` solo con bounds previos).
 - Incluya suite Foundry: unit + fuzz + invariant + attack + tests de interfaces y safe-receiver.
-- Incluya demo Next.js (Fase 6 ✅): wallet, mint, transfer, URI, royalty, tema claro/oscuro.
+- Incluya demo Next.js (Fase 6 ✅): wallet, mint, transfer, URI, royalty, tema claro/oscuro, manual `/ayuda`.
+- Docs finales / handoff (Fase 7 ✅).
 
 ---
 
@@ -470,47 +471,44 @@ Demo Next.js: conectar wallet, mint (owner), ver `tokenURI`, transfer, mostrar r
 - `ThemeToggle` — `data-theme` + CSS variables; preferencia en `localStorage` (`nft-theme`); script anti-flash en `layout.tsx`.
 - Flujos: mint / safeMint / mintBatch, transfer, lookup tokenURI+royalty, setBaseURI.
 - `doc/FRONTEND.md` — setup Anvil + flujo feliz.
-- `npm test` → **8 passed**; `npm run build` → OK (Node ≥ 20; recomendado `nvm use 22`).
+- `npm test` → **9 passed**; `npm run build` → OK (Node ≥ 20; recomendado `nvm use 22`).
 - Verificado en vivo: Anvil + deploy + `http://localhost:3000` (supply, royalty, toggle tema).
+- Manual in-app `/ayuda` + `doc/MANUAL-FRONTEND.md` + botón **? Ayuda**.
 
 #### Aprobación
 
 - [x] Autorizada para ejecutar  
 - [x] Completada y revisada → ✅ 2026-08-29
 
-> Responde cuando quieras iniciar la **Fase 7**: `Autorizo Fase 7`
-
 ---
 
 ### Fase 7 — Docs finales y handoff
 
-**Estado:** 🔒 Pendiente de autorización  
-**Duración estimada:** 0.5–1 día  
+**Estado:** ✅ Completada (2026-08-29)  
+**Duración:** ~0.5 día  
 **Depende de:** Fase 5 ✅ + Fase 6 ✅
 
 #### Objetivo
 
 Alinear diagramas con código final; README usable por un tercero; cerrar DoD global.
 
-#### Tareas
+#### Tareas realizadas
 
-1. Revisar README del módulo (ya actualizado en Fase 6; alinear si falta).
-2. Actualizar diagramas (`01`–`03`) si hubo desviaciones vs código final.
-3. HANDOFF / limitaciones / mejoras (si se autorizan esos archivos).
-4. Marcar Definition of Done global (§8).
-5. Mencionar tema claro/oscuro y Node ≥ 20 en handoff/frontend si aplica.
+1. README del módulo apuntando a HANDOFF y docs completas.
+2. Diagramas `01`–`03` actualizados a **as-built** (`_reserveMint`, royalties per-token, `tokenURI` OZ, mocks, UI ayuda/tema).
+3. `doc/HANDOFF.md`, `doc/LIMITACIONES.md`, `doc/MEJORAS.md`.
+4. DoD global §8 marcado completo (incl. diagramas).
+5. Tema claro/oscuro y Node ≥ 20 documentados en handoff / README / frontend.
 
 #### Criterios de aceptación
 
-- [ ] `doc/` coherente con implementación.
-- [ ] Tercero puede testear/deploy/UI siguiendo docs.
+- [x] `doc/` coherente con implementación.
+- [x] Tercero puede testear/deploy/UI siguiendo docs (`HANDOFF` → `DEPLOY` → `FRONTEND` / `MANUAL-FRONTEND`).
 
 #### Aprobación
 
-- [ ] Autorizada para ejecutar  
-- [ ] Completada y revisada → ✅ fecha
-
-> **No iniciar sin:** `Autorizo Fase 7`
+- [x] Autorizada para ejecutar (`Vamos al paso 7`)  
+- [x] Completada y revisada → ✅ 2026-08-29
 
 ---
 
@@ -524,7 +522,7 @@ Alinear diagramas con código final; README usable por un tercero; cerrar DoD gl
 [x] Fase 4  Fuzz / safe / gas / SWC    → ✅ 2026-08-28
 [x] Fase 5  Deploy + ABI               → ✅ 2026-08-28
 [x] Fase 6  Frontend (opcional)        → ✅ 2026-08-29
-[ ] Fase 7  Docs finales               → 🔒
+[x] Fase 7  Docs finales               → ✅ 2026-08-29
 ```
 
 ---
@@ -539,8 +537,8 @@ Alinear diagramas con código final; README usable por un tercero; cerrar DoD gl
 6. [x] Ownable2Step en funciones admin.
 7. [x] Solo custom errors; NatSpec en públicas/externas.
 8. [x] Suite: unit + fuzz + invariant + ataque non-receiver / reentrancy (`forge test` → 58).
-9. [ ] Diagramas y plan alineados al cierre (Fase 7).
-10. [x] Frontend autorizado e implementado (Fase 6: mint/transfer/URI/royalty + tema claro/oscuro).
+9. [x] Diagramas y plan alineados al cierre (Fase 7).
+10. [x] Frontend autorizado e implementado (Fase 6: mint/transfer/URI/royalty + tema claro/oscuro + ayuda).
 
 ---
 
@@ -560,6 +558,6 @@ Alinear diagramas con código final; README usable por un tercero; cerrar DoD gl
 
 ## 10. Próximo paso inmediato
 
-**Estado:** Fases **0–6** cerradas (contratos + tests + deploy + demo UI con tema).  
+**Estado:** módulo **cerrado** (Fases 0–7).  
 
-Para docs finales, handoff y cierre DoD §9: responde **`Autorizo Fase 7`**.
+Para un tercero: partir de [`HANDOFF.md`](./HANDOFF.md). Mejoras opcionales: [`MEJORAS.md`](./MEJORAS.md).

@@ -36,13 +36,15 @@ Documento completo: [`MANUAL-FRONTEND.md`](./MANUAL-FRONTEND.md).
 5. **Safe transfer** → envía el token a otra cuenta Anvil (p. ej. #1).
 6. (Owner) **Actualizar URI** → cambia la base URI y vuelve a consultar.
 
+Playbooks: [`DEPLOY.md`](./DEPLOY.md) · manual: [`MANUAL-FRONTEND.md`](./MANUAL-FRONTEND.md) · handoff: [`HANDOFF.md`](./HANDOFF.md).
+
 ## Scripts
 
 | Comando | Uso |
 |---------|-----|
 | `npm run dev` | Dev server |
 | `npm run build` | Build producción |
-| `npm test` | Vitest + RTL |
+| `npm test` | Vitest + RTL (**9** tests) |
 | `npm run lint` | ESLint |
 
 ## Nota Next.js / env

@@ -1,6 +1,7 @@
 # Diagrama de flujo — ERC-721 NFT Collection & Royalty
 
-Secuencias de interacción entre **usuario/owner**, **wallet/frontend** y **NFTCollection** (diseño v1). Complementa el [flujograma de decisiones](./03-flujograma.md). Plan: [`00-plan-implementacion.md`](./00-plan-implementacion.md).
+Secuencias **as-built** (Fase 7): owner/usuario ↔ wallet/frontend ↔ `NFTCollection`.  
+Complementa: [`03-flujograma.md`](./03-flujograma.md) · plan: [`00-plan-implementacion.md`](./00-plan-implementacion.md).
 
 ---
 
@@ -17,8 +18,8 @@ sequenceDiagram
     O->>W: safeMint(to)
     W->>N: safeMint(to)
     Note over N: onlyOwner
-    Note over N: Checks: to != 0, totalSupply + 1 <= maxSupply
-    Note over N: Effects: _nextTokenId++, owner/balance
+    Note over N: Checks vía _reserveMint:<br/>to != 0, totalSupply + 1 <= maxSupply
+    Note over N: Effects: _nextTokenId++, _totalMinted++,<br/>luego _safeMint → owner/balance
     Note over N: Emit Transfer(0, to, tokenId)
     alt to es EOA
         N-->>W: tokenId
@@ -47,9 +48,9 @@ sequenceDiagram
     O->>W: safeMintBatch(to, quantity)
     W->>N: safeMintBatch(to, quantity)
     Note over N: onlyOwner
-    Note over N: Checks: quantity > 0, to != 0,<br/>totalSupply + quantity <= maxSupply
+    Note over N: Checks vía _reserveMint:<br/>quantity > 0, to != 0,<br/>totalSupply + quantity <= maxSupply
     loop i = 0 .. quantity-1 (unchecked tras checks)
-        Note over N: Effects: mint tokenId = start + i
+        Note over N: Effects: _safeMint(tokenId = start + i)
         Note over N: safe receiver check por token (si to contrato)
     end
     Note over N: Emit BatchMinted(to, fromTokenId, quantity)

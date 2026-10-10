@@ -1,5 +1,7 @@
 # Optimización de gas — NFTCollection
 
+> 🌐 [English](./GAS-EN.md) · **Español**
+
 Regenerar:
 
 ```bash
@@ -60,4 +62,4 @@ forge test --match-contract 'NFTCollectionDesignTest|NFTCollectionLifecycleTest|
 
 Suite Fase 4: **58 tests** verdes (incl. fuzz + invariant + attack).
 
-Ver [`ATAQUES.md`](./ATAQUES.md) y [`SWC-AUDIT.md`](./SWC-AUDIT.md).
+Ver [`ATAQUES-ES.md`](./ATAQUES-ES.md) y [`SWC-AUDIT-ES.md`](./SWC-AUDIT-ES.md).

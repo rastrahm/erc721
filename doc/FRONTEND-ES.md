@@ -1,11 +1,13 @@
 # Frontend demo — Fase 6
 
+> 🌐 [English](./FRONTEND-EN.md) · **Español**
+
 UI Next.js (App Router) para `NFTCollection`: conectar wallet, mint (owner), transfer, consultar `tokenURI` / royalty y actualizar base URI.
 
 ## Prerrequisitos
 
 1. Node **≥ 20** (recomendado 22 via nvm).
-2. Anvil + deploy (ver [`DEPLOY.md`](./DEPLOY.md)).
+2. Anvil + deploy (ver [`DEPLOY-ES.md`](./DEPLOY-ES.md)).
 3. ABIs en `frontend/abi/` (`./script/export-abi.sh`).
 
 ## Setup
@@ -25,7 +27,7 @@ Abre http://localhost:3000. En MetaMask:
 - Importa la private key Anvil #0 (solo demo local) — es el **owner** del deploy por defecto
 
 **Manual de ayuda:** botón **? Ayuda** en la UI → http://localhost:3000/ayuda  
-Documento completo: [`MANUAL-FRONTEND.md`](./MANUAL-FRONTEND.md).
+Documento completo: [`MANUAL-FRONTEND-ES.md`](./MANUAL-FRONTEND-ES.md).
 
 ## Flujo feliz
 
@@ -36,7 +38,7 @@ Documento completo: [`MANUAL-FRONTEND.md`](./MANUAL-FRONTEND.md).
 5. **Safe transfer** → envía el token a otra cuenta Anvil (p. ej. #1).
 6. (Owner) **Actualizar URI** → cambia la base URI y vuelve a consultar.
 
-Playbooks: [`DEPLOY.md`](./DEPLOY.md) · manual: [`MANUAL-FRONTEND.md`](./MANUAL-FRONTEND.md) · handoff: [`HANDOFF.md`](./HANDOFF.md).
+Playbooks: [`DEPLOY-ES.md`](./DEPLOY-ES.md) · manual: [`MANUAL-FRONTEND-ES.md`](./MANUAL-FRONTEND-ES.md) · handoff: [`HANDOFF-ES.md`](./HANDOFF-ES.md).
 
 ## Scripts
 

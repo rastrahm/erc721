@@ -1,10 +1,12 @@
 # Campañas de ataque — NFTCollection
 
+> 🌐 [English](./ATAQUES-EN.md) · **Español**
+
 > **Protocolo:** tests Foundry defensivos (`vm.expectRevert` / invariantes). El “éxito” del ataque es que **falle** o quede documentado como limitación de estándar.  
 > **Fuera de alcance:** scripts de exploit ofensivos o procedimientos para robar NFTs ajenos.
 
 Contrato: `src/NFTCollection.sol`  
-Auditoría: [`SWC-AUDIT.md`](./SWC-AUDIT.md)
+Auditoría: [`SWC-AUDIT-ES.md`](./SWC-AUDIT-ES.md)
 
 ---
 
@@ -109,4 +111,4 @@ Mitigación off-chain: revocar approval; flujos atómicos; no re-aprobar sin res
 - Pausable / rescue  
 - Exploits ofensivos / PoC de robo real  
 
-Ver [`SWC-AUDIT.md`](./SWC-AUDIT.md) sección informativos.
+Ver [`SWC-AUDIT-ES.md`](./SWC-AUDIT-ES.md) sección informativos.

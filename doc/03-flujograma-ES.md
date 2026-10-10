@@ -1,6 +1,8 @@
 # Flujograma — ERC-721 NFT Collection & Royalty
 
-Diagramas de decisión **as-built** (Fase 7). Secuencias: [`02-diagrama-flujo.md`](./02-diagrama-flujo.md). Plan: [`00-plan-implementacion.md`](./00-plan-implementacion.md).
+> 🌐 [English](./03-flujograma-EN.md) · **Español**
+
+Diagramas de decisión **as-built** (Fase 7). Secuencias: [`02-diagrama-flujo-ES.md`](./02-diagrama-flujo-ES.md). Plan: [`00-plan-implementacion-ES.md`](./00-plan-implementacion-ES.md).
 
 Orden en mint: `onlyOwner` → `_reserveMint` (checks + reserva ids) → effects `_mint`/`_safeMint` → (safe) interaction receiver.
 
@@ -49,7 +51,7 @@ flowchart TD
     H -->|No| I[Revert MaxSupplyExceeded]
     I --> Z
     H -->|Sí| J[fromId = _nextTokenId; reservar quantity]
-    J --> K[Loop unchecked tokenId = fromId .. end)
+    J --> K["Loop unchecked tokenId = fromId .. end"]
     K --> L[_mint o _safeMint tokenId]
     L --> M{Variante safe y to es contrato?}
     M -->|Sí| N[onERC721Received por token]

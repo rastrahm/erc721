@@ -34,7 +34,7 @@ export function NftCollectionApp() {
           <h2 className="panel-title">Falta configuración</h2>
           <p className="muted">
             Copia <code>.env.example</code> → <code>.env.local</code> con la
-            address del deploy Anvil (ver <code>doc/DEPLOY.md</code>). Manual
+            address del deploy Anvil (ver <code>doc/DEPLOY-ES.md</code>). Manual
             in-app: <a href="/ayuda">/ayuda</a>.
           </p>
           <pre className="error-box">

@@ -1,5 +1,7 @@
 # Manual de ayuda — Frontend NFTCollection
 
+> 🌐 [English](./MANUAL-FRONTEND-EN.md) · **Español**
+
 Guía de usuario de la demo Next.js (`frontend/`). Versión in-app: **http://localhost:3000/ayuda** (botón **? Ayuda** en la UI).
 
 ---
@@ -14,7 +16,7 @@ Guía de usuario de la demo Next.js (`frontend/`). Versión in-app: **http://loc
 | Env | `frontend/.env.local` con `NEXT_PUBLIC_COLLECTION_ADDRESS` |
 | Wallet | MetaMask en Localhost; Anvil #0 = owner |
 
-Setup completo: [`FRONTEND.md`](./FRONTEND.md) · [`DEPLOY.md`](./DEPLOY.md).
+Setup completo: [`FRONTEND-ES.md`](./FRONTEND-ES.md) · [`DEPLOY-ES.md`](./DEPLOY-ES.md).
 
 ---
 

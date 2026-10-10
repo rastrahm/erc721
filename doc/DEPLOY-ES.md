@@ -1,5 +1,7 @@
 # Deploy playbook — NFTCollection (Fase 5)
 
+> 🌐 [English](./DEPLOY-EN.md) · **Español**
+
 Comandos para desplegar la colección ERC-721 + ERC-2981 y exportar ABIs.
 
 ## Prerrequisitos
@@ -72,7 +74,7 @@ Genera (en `doc/abi/` y `frontend/abi/`):
 
 ## 3. Frontend env (Fase 6)
 
-Ver playbook completo: [`FRONTEND.md`](./FRONTEND.md).
+Ver playbook completo: [`FRONTEND-ES.md`](./FRONTEND-ES.md).
 
 ```bash
 cd frontend

@@ -191,11 +191,11 @@ export function HelpManual() {
         </h2>
         <ul className="help-list">
           <li>
-            Repo: <code>doc/FRONTEND.md</code>, <code>doc/DEPLOY.md</code>,{" "}
-            <code>doc/MANUAL-FRONTEND.md</code>
+            Repo: <code>doc/FRONTEND-ES.md</code>, <code>doc/DEPLOY-ES.md</code>,{" "}
+            <code>doc/MANUAL-FRONTEND-ES.md</code>
           </li>
           <li>
-            Contratos: <code>doc/00-plan-implementacion.md</code>
+            Contratos: <code>doc/00-plan-implementacion-ES.md</code>
           </li>
         </ul>
       </section>

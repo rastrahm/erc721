@@ -1,5 +1,7 @@
 # Diagrama de clases — ERC-721 NFT Collection & Royalty
 
+> 🌐 [English](./01-diagrama-clases-EN.md) · **Español**
+
 Vista **as-built** (Fase 7) alineada a `src/NFTCollection.sol` + `INFTCollection.sol` + demo `frontend/`.
 
 ---

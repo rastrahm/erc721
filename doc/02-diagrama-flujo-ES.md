@@ -1,7 +1,9 @@
 # Diagrama de flujo — ERC-721 NFT Collection & Royalty
 
+> 🌐 [English](./02-diagrama-flujo-EN.md) · **Español**
+
 Secuencias **as-built** (Fase 7): owner/usuario ↔ wallet/frontend ↔ `NFTCollection`.  
-Complementa: [`03-flujograma.md`](./03-flujograma.md) · plan: [`00-plan-implementacion.md`](./00-plan-implementacion.md).
+Complementa: [`03-flujograma-ES.md`](./03-flujograma-ES.md) · plan: [`00-plan-implementacion-ES.md`](./00-plan-implementacion-ES.md).
 
 ---
 

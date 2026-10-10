@@ -11,7 +11,7 @@ import {INFTCollection} from "./interfaces/INFTCollection.sol";
 /**
  * @title NFTCollection
  * @notice Colección ERC-721 gas-optimizada con batch mint, base URI dinámica y ERC-2981.
- * @dev Módulo cerrado (Fases 0–7). Ver `doc/HANDOFF.md` y `doc/00-plan-implementacion.md`.
+ * @dev Módulo cerrado (Fases 0–7). Ver `doc/HANDOFF-ES.md` y `doc/00-plan-implementacion-ES.md`.
  *
  * Layout: interfaz → herencia OZ → estado → constructor → views → mutators → overrides.
  */

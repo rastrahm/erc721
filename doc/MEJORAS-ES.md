@@ -1,5 +1,7 @@
 # Mejoras opcionales — módulo 04 ERC-721
 
+> 🌐 [English](./MEJORAS-EN.md) · **Español**
+
 Backlog **no comprometido**. Priorizar solo si hay autorización explícita.
 
 ---

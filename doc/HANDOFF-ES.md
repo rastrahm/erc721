@@ -1,5 +1,7 @@
 # Handoff — módulo 04 ERC-721
 
+> 🌐 [English](./HANDOFF-EN.md) · **Español**
+
 Guía para un tercero que hereda el módulo: qué hay, cómo verificarlo y dónde mirar.
 
 **Estado:** Fases **0–7** cerradas (2026-08-29).
@@ -16,6 +18,7 @@ Guía para un tercero que hereda el módulo: qué hay, cómo verificarlo y dónd
 | Tests unit / fuzz / invariant / attack | `test/` |
 | Deploy Anvil + export ABI | `script/Deploy.s.sol`, `script/export-abi.sh` |
 | Demo UI (Next.js 15 + ethers v6) | `frontend/` |
+| Página portafolio ES/EN | `portfolio/` |
 | Docs | `doc/` |
 
 **Decisiones v1 (congeladas):** mint **onlyOwner**; `tokenId` desde **0**; `tokenURI = baseURI + id`; sin Pausable / Enumerable / allowlist / reveal.
@@ -37,7 +40,7 @@ npm test            # 9 tests
 npm run build
 ```
 
-Deploy + UI local: [`DEPLOY.md`](./DEPLOY.md) · [`FRONTEND.md`](./FRONTEND.md) · [`MANUAL-FRONTEND.md`](./MANUAL-FRONTEND.md).  
+Deploy + UI local: [`DEPLOY-ES.md`](./DEPLOY-ES.md) · [`FRONTEND-ES.md`](./FRONTEND-ES.md) · [`MANUAL-FRONTEND-ES.md`](./MANUAL-FRONTEND-ES.md).  
 Ayuda in-app: `http://localhost:3000/ayuda` (botón **? Ayuda**).
 
 ---
@@ -46,18 +49,19 @@ Ayuda in-app: `http://localhost:3000/ayuda` (botón **? Ayuda**).
 
 | Doc | Uso |
 |-----|-----|
-| [`00-plan-implementacion.md`](./00-plan-implementacion.md) | Plan por fases + DoD |
-| [`01-diagrama-clases.md`](./01-diagrama-clases.md) | Clases / herencia (as-built) |
-| [`02-diagrama-flujo.md`](./02-diagrama-flujo.md) | Secuencias |
-| [`03-flujograma.md`](./03-flujograma.md) | Decisiones |
-| [`SWC-AUDIT.md`](./SWC-AUDIT.md) | SWC-100–136 |
-| [`ATAQUES.md`](./ATAQUES.md) | Campañas + tests |
-| [`GAS.md`](./GAS.md) | Baseline gas |
-| [`DEPLOY.md`](./DEPLOY.md) | Anvil / testnet / ABI |
-| [`FRONTEND.md`](./FRONTEND.md) | Setup UI |
-| [`MANUAL-FRONTEND.md`](./MANUAL-FRONTEND.md) | Manual de usuario UI |
-| [`LIMITACIONES.md`](./LIMITACIONES.md) | Fuera de alcance / known limits |
-| [`MEJORAS.md`](./MEJORAS.md) | Backlog opcional |
+| [`00-plan-implementacion-ES.md`](./00-plan-implementacion-ES.md) | Plan por fases + DoD |
+| [`01-diagrama-clases-ES.md`](./01-diagrama-clases-ES.md) | Clases / herencia (as-built) |
+| [`02-diagrama-flujo-ES.md`](./02-diagrama-flujo-ES.md) | Secuencias |
+| [`03-flujograma-ES.md`](./03-flujograma-ES.md) | Decisiones |
+| [`SWC-AUDIT-ES.md`](./SWC-AUDIT-ES.md) | SWC-100–136 |
+| [`ATAQUES-ES.md`](./ATAQUES-ES.md) | Campañas + tests |
+| [`GAS-ES.md`](./GAS-ES.md) | Baseline gas |
+| [`DEPLOY-ES.md`](./DEPLOY-ES.md) | Anvil / testnet / ABI |
+| [`FRONTEND-ES.md`](./FRONTEND-ES.md) | Setup UI |
+| [`MANUAL-FRONTEND-ES.md`](./MANUAL-FRONTEND-ES.md) | Manual de usuario UI |
+| [`LIMITACIONES-ES.md`](./LIMITACIONES-ES.md) | Fuera de alcance / known limits |
+| [`DECISIONES-TECNICAS-ES.md`](./DECISIONES-TECNICAS-ES.md) | Decisiones, lógica del contrato, gas |
+| [`MEJORAS-ES.md`](./MEJORAS-ES.md) | Backlog opcional |
 
 ---
 
@@ -109,5 +113,5 @@ Ayuda in-app: `http://localhost:3000/ayuda` (botón **? Ayuda**).
 
 ## 8. Contacto de contexto
 
-Plan y protocolo de fases: `.cursorrules` + `doc/00-plan-implementacion.md`.  
+Plan y protocolo de fases: `.cursorrules` + `doc/00-plan-implementacion-ES.md`.  
 Módulo hermano en monorepo: suite `evm-smart-contracts-suite`.

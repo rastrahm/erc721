@@ -1,5 +1,7 @@
 # Limitaciones — módulo 04 ERC-721
 
+> 🌐 [English](./LIMITACIONES-EN.md) · **Español**
+
 Alcance **v1** y comportamientos conocidos. No son bugs abiertos salvo que se indique.
 
 ---
@@ -37,5 +39,5 @@ Alcance **v1** y comportamientos conocidos. No son bugs abiertos salvo que se in
 
 ## Seguridad (resumen)
 
-Auditoría SWC y campañas: [`SWC-AUDIT.md`](./SWC-AUDIT.md), [`ATAQUES.md`](./ATAQUES.md).  
+Auditoría SWC y campañas: [`SWC-AUDIT-ES.md`](./SWC-AUDIT-ES.md), [`ATAQUES-ES.md`](./ATAQUES-ES.md).  
 Mitigaciones principales: custom errors, supply check antes de loops `unchecked`, safe receiver en rutas safe, Ownable2Step para admin.

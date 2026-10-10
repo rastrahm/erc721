@@ -1,81 +1,61 @@
 # 04 — ERC-721 NFT Collection & Royalty
 
-Colección NFT **ERC-721** gas-optimizada con mint por lotes, base URI dinámica y royalties **ERC-2981**. Solidity `0.8.24` + Foundry + demo Next.js.
+Gas-optimized **ERC-721** NFT collection with batch minting, dynamic base URI and **ERC-2981** royalties · Solidity `0.8.24` · Foundry · Next.js demo.
 
-**Estado:** Fases **0–7** ✅ (módulo cerrado).
-
----
-
-## Stack
-
-| Capa | Tecnología |
-|------|------------|
-| Contratos | Solidity `0.8.24`, OpenZeppelin v5 (`ERC721`, `ERC2981`, `Ownable2Step`) |
-| Tooling | Foundry (`forge` / `cast` / `anvil`) |
-| Estándares | ERC-721, ERC-165, ERC-2981 |
-| UI demo | Next.js 15, ethers v6, Zod, Vitest · tema claro/oscuro · `/ayuda` |
+Colección NFT **ERC-721** gas-optimizada con mint por lotes, base URI dinámica y royalties **ERC-2981** · Solidity `0.8.24` · Foundry · demo Next.js.
 
 ---
 
-## Documentación
+## 🌐 Choose your language · Elige tu idioma
 
-| Documento | Contenido |
-|-----------|-----------|
-| [`doc/HANDOFF.md`](doc/HANDOFF.md) | **Empezar aquí** — verificación y mapa |
-| [`doc/00-plan-implementacion.md`](doc/00-plan-implementacion.md) | Plan por fases + DoD |
-| [`doc/01-diagrama-clases.md`](doc/01-diagrama-clases.md) | Diagrama de clases (as-built) |
-| [`doc/02-diagrama-flujo.md`](doc/02-diagrama-flujo.md) | Secuencias |
-| [`doc/03-flujograma.md`](doc/03-flujograma.md) | Flujogramas de decisión |
-| [`doc/SWC-AUDIT.md`](doc/SWC-AUDIT.md) | Auditoría SWC-100–136 |
-| [`doc/ATAQUES.md`](doc/ATAQUES.md) | Campañas de ataque + tests |
-| [`doc/GAS.md`](doc/GAS.md) | Gas report baseline |
-| [`doc/DEPLOY.md`](doc/DEPLOY.md) | Deploy Anvil / testnet + ABI |
-| [`doc/FRONTEND.md`](doc/FRONTEND.md) | Setup demo UI |
-| [`doc/MANUAL-FRONTEND.md`](doc/MANUAL-FRONTEND.md) | Manual de usuario UI |
-| [`doc/LIMITACIONES.md`](doc/LIMITACIONES.md) | Alcance y límites v1 |
-| [`doc/MEJORAS.md`](doc/MEJORAS.md) | Backlog opcional |
+| | English | Español |
+|---|---------|---------|
+| **README** | [README-EN.md](./README-EN.md) | [README-ES.md](./README-ES.md) |
 
 ---
 
-## Uso rápido
+## 📚 Documentation index · Índice de documentación
+
+| Topic · Tema | English | Español |
+|--------------|---------|---------|
+| Handoff (start here · empezar aquí) | [HANDOFF-EN](doc/HANDOFF-EN.md) | [HANDOFF-ES](doc/HANDOFF-ES.md) |
+| Implementation plan · Plan de implementación | [00-plan-implementacion-EN](doc/00-plan-implementacion-EN.md) | [00-plan-implementacion-ES](doc/00-plan-implementacion-ES.md) |
+| Class diagram · Diagrama de clases | [01-diagrama-clases-EN](doc/01-diagrama-clases-EN.md) | [01-diagrama-clases-ES](doc/01-diagrama-clases-ES.md) |
+| Sequence diagrams · Diagramas de flujo | [02-diagrama-flujo-EN](doc/02-diagrama-flujo-EN.md) | [02-diagrama-flujo-ES](doc/02-diagrama-flujo-ES.md) |
+| Decision flowcharts · Flujogramas | [03-flujograma-EN](doc/03-flujograma-EN.md) | [03-flujograma-ES](doc/03-flujograma-ES.md) |
+| Technical decisions & gas · Decisiones técnicas y gas | [DECISIONES-TECNICAS-EN](doc/DECISIONES-TECNICAS-EN.md) | [DECISIONES-TECNICAS-ES](doc/DECISIONES-TECNICAS-ES.md) |
+| Gas report · Reporte de gas | [GAS-EN](doc/GAS-EN.md) | [GAS-ES](doc/GAS-ES.md) |
+| SWC audit · Auditoría SWC | [SWC-AUDIT-EN](doc/SWC-AUDIT-EN.md) | [SWC-AUDIT-ES](doc/SWC-AUDIT-ES.md) |
+| Attack campaigns · Campañas de ataque | [ATAQUES-EN](doc/ATAQUES-EN.md) | [ATAQUES-ES](doc/ATAQUES-ES.md) |
+| Deploy · Despliegue | [DEPLOY-EN](doc/DEPLOY-EN.md) | [DEPLOY-ES](doc/DEPLOY-ES.md) |
+| Frontend setup · Setup frontend | [FRONTEND-EN](doc/FRONTEND-EN.md) | [FRONTEND-ES](doc/FRONTEND-ES.md) |
+| Frontend user manual · Manual de usuario | [MANUAL-FRONTEND-EN](doc/MANUAL-FRONTEND-EN.md) | [MANUAL-FRONTEND-ES](doc/MANUAL-FRONTEND-ES.md) |
+| Limitations · Limitaciones | [LIMITACIONES-EN](doc/LIMITACIONES-EN.md) | [LIMITACIONES-ES](doc/LIMITACIONES-ES.md) |
+| Improvements backlog · Mejoras | [MEJORAS-EN](doc/MEJORAS-EN.md) | [MEJORAS-ES](doc/MEJORAS-ES.md) |
+
+Portfolio page (ES/EN toggle) · Página de portafolio: [`portfolio/index.html`](portfolio/index.html)
+
+---
+
+## ⚡ Quick start · Inicio rápido
 
 ```bash
 export PATH="$HOME/.foundry/bin:$PATH"
+forge build && forge test          # ~58 tests
 
-forge build
-forge test                    # ~58 tests
-
-# Demo local (ver doc/DEPLOY.md)
-anvil                         # otra terminal
+anvil                              # another terminal · otra terminal
 forge script script/Deploy.s.sol:Deploy \
   --rpc-url http://127.0.0.1:8545 \
   --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 \
   --broadcast
 
-./script/export-abi.sh
-
 cd frontend && cp .env.example .env.local && npm install && npm run dev
-# Node ≥ 20 (recomendado: nvm use 22)
-# UI: http://localhost:3000 · Ayuda: /ayuda
-```
-
-Playbooks: [`doc/DEPLOY.md`](doc/DEPLOY.md) · [`doc/FRONTEND.md`](doc/FRONTEND.md) · [`doc/HANDOFF.md`](doc/HANDOFF.md).
-
----
-
-## Estructura
-
-```text
-src/           # NFTCollection + interfaces + mocks
-test/          # unit / fuzz / invariant / attack
-script/        # Deploy + export-abi
-lib/           # forge-std + openzeppelin-contracts
-doc/           # Plan, diagramas, SWC, handoff, frontend
-frontend/      # Demo Next.js (ABIs en frontend/abi/)
+# Node ≥ 20 · http://localhost:3000 · /ayuda
 ```
 
 ---
 
-## Definition of Done
+## 🔗 Repositories · Repositorios
 
-Cerrado en Fase 7 — ver checklist global en [`doc/00-plan-implementacion.md`](doc/00-plan-implementacion.md) §8.
+- GitHub → https://github.com/rastrahm/erc721
+- GitLab → https://gitlab.com/rastrahm/erc721

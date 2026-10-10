@@ -1,5 +1,7 @@
 # Auditoría SWC — NFTCollection
 
+> 🌐 [English](./SWC-AUDIT-EN.md) · **Español**
+
 Verificación de `NFTCollection` contra el [SWC Registry](https://swcregistry.io/) (EIP-1470) y principios del monorepo (custom errors, Ownable2Step, safe ERC-721, ERC-2981).
 
 > **Nota:** El SWC Registry no se mantiene activamente desde ~2020. Complementar con [SCSVS](https://github.com/ComposableSecurity/SCSVS) y [EEA EthTrust](https://entethalliance.org/specs/ethtrust/).
@@ -7,7 +9,7 @@ Verificación de `NFTCollection` contra el [SWC Registry](https://swcregistry.io
 **Contrato auditado:** `src/NFTCollection.sol` (+ `src/interfaces/INFTCollection.sol`)  
 **Fecha:** 2026-08-28  
 **Referencia tests:** `test/NFTCollection.t.sol`, `test/unit/`, `test/fuzz/`, `test/invariant/`, `test/attack/`  
-**Campañas:** [`ATAQUES.md`](./ATAQUES.md) · **Gas:** [`GAS.md`](./GAS.md)
+**Campañas:** [`ATAQUES-ES.md`](./ATAQUES-ES.md) · **Gas:** [`GAS-ES.md`](./GAS-ES.md)
 
 ---
 
@@ -139,6 +141,6 @@ Un tercero puede observar `approve(spender, tokenId)` y actuar antes de que se c
 - [EIP-1470](https://eips.ethereum.org/EIPS/eip-1470)
 - [EIP-721](https://eips.ethereum.org/EIPS/eip-721)
 - [EIP-2981](https://eips.ethereum.org/EIPS/eip-2981)
-- Campañas: [`ATAQUES.md`](./ATAQUES.md)
-- Gas: [`GAS.md`](./GAS.md)
-- Plan: [`00-plan-implementacion.md`](./00-plan-implementacion.md)
+- Campañas: [`ATAQUES-ES.md`](./ATAQUES-ES.md)
+- Gas: [`GAS-ES.md`](./GAS-ES.md)
+- Plan: [`00-plan-implementacion-ES.md`](./00-plan-implementacion-ES.md)

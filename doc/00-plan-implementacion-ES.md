@@ -1,5 +1,7 @@
 # Plan de implementación — ERC-721 NFT Collection & Royalty (Módulo 04)
 
+> 🌐 [English](./00-plan-implementacion-EN.md) · **Español**
+
 Documento maestro del módulo. Define fases, entregables, criterios de aceptación y el **protocolo de autorización** usado durante el desarrollo.
 
 > **Estado actual:** Fases **0–7** ✅ (módulo cerrado, 2026-08-29).
@@ -35,8 +37,7 @@ Construir una **colección NFT ERC-721 gas-optimizada** que:
 - Enforce **safe mint/transfer** vía `onERC721Received` cuando el destino es contrato.
 - Aplique **custom errors**, NatSpec y optimizaciones (`unchecked` solo con bounds previos).
 - Incluya suite Foundry: unit + fuzz + invariant + attack + tests de interfaces y safe-receiver.
-- Incluya demo Next.js (Fase 6 ✅): wallet, mint, transfer, URI, royalty, tema claro/oscuro, manual `/ayuda`.
-- Docs finales / handoff (Fase 7 ✅).
+- Incluya demo Next.js (Fase 6 ✅): wallet, mint, transfer, URI, royalty, tema claro/oscuro.
 
 ---
 
@@ -78,11 +79,11 @@ Next.js demo + ethers v6  ──RPC──►  Anvil / Testnet
 
 Documentación relacionada:
 
-- [Diagrama de clases](./01-diagrama-clases.md)
-- [Diagrama de flujo](./02-diagrama-flujo.md)
-- [Flujograma](./03-flujograma.md)
-- [SWC-AUDIT](./SWC-AUDIT.md) · [ATAQUES](./ATAQUES.md) · [GAS](./GAS.md)
-- [DEPLOY](./DEPLOY.md) · [FRONTEND](./FRONTEND.md)
+- [Diagrama de clases](./01-diagrama-clases-ES.md)
+- [Diagrama de flujo](./02-diagrama-flujo-ES.md)
+- [Flujograma](./03-flujograma-ES.md)
+- [SWC-AUDIT](./SWC-AUDIT-ES.md) · [ATAQUES](./ATAQUES-ES.md) · [GAS](./GAS-ES.md)
+- [DEPLOY](./DEPLOY-ES.md) · [FRONTEND](./FRONTEND-ES.md)
 
 ---
 
@@ -96,15 +97,15 @@ Documentación relacionada:
 ├── remappings.txt
 ├── .env.example
 ├── doc/
-│   ├── 00-plan-implementacion.md
-│   ├── 01-diagrama-clases.md
-│   ├── 02-diagrama-flujo.md
-│   ├── 03-flujograma.md
-│   ├── SWC-AUDIT.md
-│   ├── ATAQUES.md
-│   ├── GAS.md
-│   ├── DEPLOY.md
-│   ├── FRONTEND.md
+│   ├── 00-plan-implementacion-ES.md
+│   ├── 01-diagrama-clases-ES.md
+│   ├── 02-diagrama-flujo-ES.md
+│   ├── 03-flujograma-ES.md
+│   ├── SWC-AUDIT-ES.md
+│   ├── ATAQUES-ES.md
+│   ├── GAS-ES.md
+│   ├── DEPLOY-ES.md
+│   ├── FRONTEND-ES.md
 │   └── abi/                          # NFTCollection + INFTCollection
 ├── src/
 │   ├── interfaces/INFTCollection.sol
@@ -178,7 +179,7 @@ royalty feeNumerator <= feeDenominator (típicamente 10000)
 | 4 | Fuzz + safe-receiver / ataques + gas report | ✅ Aprobada (2026-08-28) |
 | 5 | Scripts deploy + ABI | ✅ Aprobada (2026-08-28) |
 | 6 | Frontend demo (opcional) | ✅ Aprobada (2026-08-29) |
-| 7 | Docs finales, handoff, alineación diagramas | 🔒 Pendiente |
+| 7 | Docs finales, handoff, alineación diagramas | ✅ Aprobada (2026-08-29) |
 
 ---
 
@@ -370,13 +371,13 @@ Endurecer propiedades de supply, ownership y seguridad de safe transfers.
 3. Ataque: mint/transfer a contrato sin receiver; callback malicioso si se autoriza.
 4. `forge test --gas-report` y notas de tradeoffs.
 5. Cobertura de paths de error custom.
-6. Auditoría SWC + campañas de ataque (`doc/SWC-AUDIT.md`, `doc/ATAQUES.md`).
+6. Auditoría SWC + campañas de ataque (`doc/SWC-AUDIT-ES.md`, `doc/ATAQUES-ES.md`).
 
 #### Criterios de aceptación
 
 - [x] Fuzz ≥ 1000 runs sin rotura de invariante de supply.
 - [x] Non-receiver revierte de forma explícita.
-- [x] Gas report baseline documentado (`doc/GAS.md`).
+- [x] Gas report baseline documentado (`doc/GAS-ES.md`).
 - [x] Matriz SWC-100–136 y mapeo a tests.
 
 #### Resultado
@@ -385,9 +386,9 @@ Endurecer propiedades de supply, ownership y seguridad de safe transfers.
 - `test/invariant/` — handler + 3 invariantes (256 runs / 3840 calls).
 - `test/attack/SafeTransferAttack.t.sol` — 11 tests (non-receiver, reentrancy, auth).
 - `src/mocks/MockERC721ReceiverReentrant.sol` — callback malicioso.
-- `doc/SWC-AUDIT.md` — matriz SWC alineada a `01-erc20` / `03-staking`.
-- `doc/ATAQUES.md` — campañas A–F con mapeo a tests.
-- `doc/GAS.md` — baseline deploy ~1.71M gas.
+- `doc/SWC-AUDIT-ES.md` — matriz SWC alineada a `01-erc20` / `03-staking`.
+- `doc/ATAQUES-ES.md` — campañas A–F con mapeo a tests.
+- `doc/GAS-ES.md` — baseline deploy ~1.71M gas.
 - Suite total: **58 tests** verdes.
 
 #### Aprobación
@@ -425,7 +426,7 @@ Deploy reproducible en Anvil/testnet y export de ABI para UI.
 
 - `script/Deploy.s.sol` — env `INITIAL_OWNER`, `COLLECTION_*`, `MAX_SUPPLY`, `BASE_URI`, `ROYALTY_*`.
 - `script/export-abi.sh` → `doc/abi/` + `frontend/abi/` (`NFTCollection`, `INFTCollection`).
-- `doc/DEPLOY.md` — playbook Anvil, testnet, `cast` post-deploy.
+- `doc/DEPLOY-ES.md` — playbook Anvil, testnet, `cast` post-deploy.
 - Verificado Anvil chain 31337: `NFTCollection` `0x5FbDB2315678afecb367f032d93F642f64180aa3` (primera deploy local).
 
 #### Aprobación
@@ -470,10 +471,10 @@ Demo Next.js: conectar wallet, mint (owner), ver `tokenURI`, transfer, mostrar r
 - `NftCollectionApp` + hooks `useWallet` / `useNftCollection` / `useTheme`.
 - `ThemeToggle` — `data-theme` + CSS variables; preferencia en `localStorage` (`nft-theme`); script anti-flash en `layout.tsx`.
 - Flujos: mint / safeMint / mintBatch, transfer, lookup tokenURI+royalty, setBaseURI.
-- `doc/FRONTEND.md` — setup Anvil + flujo feliz.
+- `doc/FRONTEND-ES.md` — setup Anvil + flujo feliz.
 - `npm test` → **9 passed**; `npm run build` → OK (Node ≥ 20; recomendado `nvm use 22`).
 - Verificado en vivo: Anvil + deploy + `http://localhost:3000` (supply, royalty, toggle tema).
-- Manual in-app `/ayuda` + `doc/MANUAL-FRONTEND.md` + botón **? Ayuda**.
+- Manual in-app `/ayuda` + `doc/MANUAL-FRONTEND-ES.md` + botón **? Ayuda**.
 
 #### Aprobación
 
@@ -496,7 +497,7 @@ Alinear diagramas con código final; README usable por un tercero; cerrar DoD gl
 
 1. README del módulo apuntando a HANDOFF y docs completas.
 2. Diagramas `01`–`03` actualizados a **as-built** (`_reserveMint`, royalties per-token, `tokenURI` OZ, mocks, UI ayuda/tema).
-3. `doc/HANDOFF.md`, `doc/LIMITACIONES.md`, `doc/MEJORAS.md`.
+3. `doc/HANDOFF-ES.md`, `doc/LIMITACIONES-ES.md`, `doc/MEJORAS-ES.md`.
 4. DoD global §8 marcado completo (incl. diagramas).
 5. Tema claro/oscuro y Node ≥ 20 documentados en handoff / README / frontend.
 
@@ -560,4 +561,4 @@ Alinear diagramas con código final; README usable por un tercero; cerrar DoD gl
 
 **Estado:** módulo **cerrado** (Fases 0–7).  
 
-Para un tercero: partir de [`HANDOFF.md`](./HANDOFF.md). Mejoras opcionales: [`MEJORAS.md`](./MEJORAS.md).
+Para un tercero: partir de [`HANDOFF-ES.md`](./HANDOFF-ES.md). Mejoras opcionales: [`MEJORAS-ES.md`](./MEJORAS-ES.md).
